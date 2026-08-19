@@ -769,6 +769,7 @@ function draw() {
     });
 
     ctx.fillStyle = "#FF6B00";
+    ctx.globalAlpha = "0.75";
 
     clones.forEach(clone => {
     
