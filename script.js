@@ -41,6 +41,17 @@ const wind_zones = [
     }
 ];
 
+const BOOST_SPEED = 32;
+const BOOST_POP = -15;
+const BOOST_TIME = 20;
+const BOOST_CD = 400;
+
+const conveyer = [
+    { x: 1470, y: canvas.height - 814 - 135, width: 100, height: 20, dir: -1 },
+    { x: 700, y: wind_zones[0].y - wind_zones[0].height - 90, width: 100, height: 20, dir: -1 },
+    { x: 200, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1 },
+];
+
 const platforms = [
     { width: 100, height: 20, x: 200, y: grass.y - grass.height - 30, friction: 1 },
     { width: 200, height: 20, x: 485, y: canvas.height - 134, friction: 1 },
@@ -51,7 +62,12 @@ const platforms = [
     { width: 200, height: 20, x: 100, y: canvas.height - 524, friction: 0.5 },
     { width: 20, height: 10, x: 200, y: canvas.height - 674, friction: 1 },
     { width: 5, height: 2, x: 410, y: canvas.height - 724, friction: 1 },
-    { width: 300, height: 20, x: wind_zones[0].x, y: wind_zones[0].y + wind_zones[0].height, friction: 1 }
+    { width: 300, height: 20, x: wind_zones[0].x, y: wind_zones[0].y + wind_zones[0].height, friction: 1 },
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 100,y:canvas.height-814 - 15,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 200,y:canvas.height-814 - 35,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 300,y:canvas.height-814 - 60,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 400,y:canvas.height-814 - 80,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 500,y:canvas.height-814 - 95,friction:1},
 ];
 
 const wall = [
@@ -186,6 +202,10 @@ let buttonCooldown = false;
 let checkpoint_set = false;
 let invismessageshown = true;
 
+let boosting = 0;
+let launchDir = 0;
+let onCooldown = false;
+
 let mpDirection = -1;
 
 const MP_SPEED = 2;
@@ -228,6 +248,7 @@ function death() {
 
     player.velocityX = 0;
     player.velocity = 0;
+    boosting = 0;
 
     if (current_locations.length > 0) {
         clones.push({ locations: current_locations, frames: 0 });
@@ -331,12 +352,21 @@ function move() {
     if (keys[left]) targetDx = -player.speed;
     if (keys[right]) targetDx = player.speed;
 
-    player.velocityX =
-        player.velocityX * (1 - friction) +
-        targetDx * friction;
+    if (boosting > 0) {
 
-    if (targetDx === 0 && friction < 1) {
-        player.velocityX *= (1 - friction * 0.5);
+        player.velocityX = BOOST_SPEED * launchDir;
+        boosting--;
+
+    } else {
+
+        player.velocityX =
+            player.velocityX * (1 - friction) +
+            targetDx * friction;
+
+        if (targetDx === 0 && friction < 1) {
+            player.velocityX *= (1 - friction * 0.5);
+        }
+
     }
 
     let dx = player.velocityX;
@@ -444,6 +474,48 @@ function move() {
             } else {
 
                 dy = platform.y + platform.height - player.y;
+                player.velocity = 0;
+
+            }
+
+        }
+
+    });
+
+    conveyer.forEach(belt => {
+
+        if (!collideRect(player, belt)) return;
+
+        const verticalHit = collideRect(new_y_rect, belt);
+        const sideHit = collideRect(new_x_rect, belt) && !verticalHit;
+
+        if (sideHit && !onCooldown) {
+
+            onCooldown = true;
+            setTimeout(() => { onCooldown = false; }, BOOST_CD);
+
+            launchDir = belt.dir;
+            boosting = BOOST_TIME;
+            player.velocity = BOOST_POP;
+            dx = 0;
+
+        } else if (sideHit) {
+
+            dx = 0;
+
+        }
+
+        if (verticalHit) {
+
+            if (player.velocity > 0) {
+
+                dy = belt.y - player.height - player.y;
+                player.velocity = 0;
+                player.ground = true;
+
+            } else {
+
+                dy = belt.y + belt.height - player.y;
                 player.velocity = 0;
 
             }
@@ -728,6 +800,16 @@ function draw() {
 
     });
 
+    ctx.fillStyle = "#FF6B00";
+
+    conveyer.forEach(belt => {
+
+        ctx.fillRect(belt.x, belt.y, belt.width, belt.height);
+
+    });
+
+    ctx.fillStyle = "#4A8FA8";
+
     ctx.fillRect(
         fake_platform.x,
         fake_platform.y,
@@ -781,6 +863,8 @@ function draw() {
         }
     
     });
+
+    ctx.globalAlpha = "1";
 
     ctx.restore();
 
