@@ -660,6 +660,9 @@ function move() {
 
     clones.forEach((clone) => {
         clone["frames"]++;
+        if ((clone["frames"]) > clone["locations"].length) {
+            clone["frames"] = 0;
+        }
     });
 
 }
@@ -765,7 +768,7 @@ function draw() {
 
     });
 
-    ctx.fillStyle = "grey";
+    ctx.fillStyle = "#FF6B00";
 
     clones.forEach(clone => {
     
