@@ -17,6 +17,10 @@ const player = {
     ground: false,
 };
 
+const clones = [];
+
+let current_locations = [];
+
 const grass = {
     x: 0,
     y: canvas.height - 30,
@@ -224,6 +228,12 @@ function death() {
 
     player.velocityX = 0;
     player.velocity = 0;
+
+    if (current_locations.length > 0) {
+        clones.push({ locations: current_locations, frames: 0 });
+    }
+
+    current_locations = [];
 
 }
 
@@ -646,7 +656,11 @@ function move() {
 
     });
 
-    // fake_spikes are visual only, they don't kill the player
+    current_locations.push({x: player.x, y: player.y});
+
+    clones.forEach((clone) => {
+        clone["frames"]++;
+    });
 
 }
 
@@ -749,6 +763,19 @@ function draw() {
             c.height
         );
 
+    });
+
+    ctx.fillStyle = "grey";
+
+    clones.forEach(clone => {
+    
+        const idx = Math.min(clone.frames, clone.locations.length - 1);
+        const pos = clone.locations[idx];
+    
+        if (pos) {
+            ctx.fillRect(pos.x, pos.y, player.width, player.height);
+        }
+    
     });
 
     ctx.restore();
