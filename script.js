@@ -2,8 +2,14 @@ const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const WORLD_WIDTH = 1650;
 const WORLD_HEIGHT = 2560;
-canvas.width = 800;
-canvas.height = 600;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
 const camera = { x: 0, y: 0 };
 
@@ -262,7 +268,7 @@ function makeMeteorShape() {
     for (let i = 0; i < numPoints; i++) {
         shape.push({
             angle: (i / numPoints) * Math.PI * 2,
-            r: 0.7 + Math.random() * 0.3 // 0.7–1.0, creates lumps
+            r: 0.7 + Math.random() * 0.3 
         });
     }
     return shape;
