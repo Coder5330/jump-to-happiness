@@ -124,8 +124,6 @@ const button = [
     },
 ];
 
-// index 0 = real checkpoint (saves progress)
-// index 1 = spawn trap — touching it silently clears any saved checkpoint
 const checkpoint = [
     { x: 850 + platforms[3].width / 2, y: platforms[3].y - platforms[3].height - 20, width: 40, height: 40 },
     { x: 10, y: WORLD_HEIGHT - 70, height: 40, width: 40 },
@@ -493,8 +491,7 @@ function resolveCollisions(dx, dy) {
 
     checkpoint.forEach((c, i) => {
         if (collideRect(new_x_rect, c) || collideRect(new_y_rect, c)) {
-            // index 1 is the spawn trap — touching it wipes any saved checkpoint
-            state.latestCheckpoint = i === 1 ? null : i;
+            state.latestCheckpoint = i;
         }
     });
 
@@ -681,7 +678,6 @@ function draw() {
     const text = Math.ceil(timerValue / 60);
 
     if (isGreenLight && text <= 3 && text >= 1) {
-        // frames elapsed since this number first appeared (0 → 59)
         const framesSinceChange = text * 60 - timerValue;
         const popDuration = 15;
         const popScale = 1 + Math.max(0, 1 - framesSinceChange / popDuration) * 0.8;
@@ -764,7 +760,6 @@ function loop() {
         }
     }
 
-    // rises forever — no ceiling, no escape once it catches up
     state.lavaHeight -= state.lavaRiseSpeed;
 
     draw();
