@@ -655,17 +655,31 @@ function draw() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1;
     }
-
-    ctx.fillStyle = "white";
-    ctx.font = "30px sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
     
-    const text = state.redLight
-        ? Math.ceil(state.redLightTimer / 60)
-        : Math.ceil(state.greenLightTimer / 60);
+    const isGreenLight = !state.redLight;
+    const timerValue = state.redLight ? state.redLightTimer : state.greenLightTimer;
+    const text = Math.ceil(timerValue / 60);
     
-    ctx.fillText(text, canvas.width / 2, 20);
+    if (isGreenLight && text <= 3 && text >= 1) {
+        // frames elapsed since this number first appeared (0 → 59)
+        const framesSinceChange = text * 60 - timerValue;
+        const popDuration = 15;
+        const popScale = 1 + Math.max(0, 1 - framesSinceChange / popDuration) * 0.8;
+    
+        ctx.save();
+        ctx.fillStyle = "white";
+        ctx.font = `${Math.round(60 * popScale)}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+        ctx.restore();
+    } else {
+        ctx.fillStyle = "white";
+        ctx.font = "30px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, canvas.width / 2, 20);
+    }
 }
 
 function loop() {
