@@ -21,7 +21,7 @@ const state = {
     counter: 0,
     changeControls: false,
     buttonCooldown: false,
-    checkpointSet: false,
+    latestCheckpoint: null,
     invisMessageShown: true,
     boosting: 0,
     launchDir: 0,
@@ -122,9 +122,11 @@ const button = [
     },
 ];
 
+// index 0 = real checkpoint (saves progress)
+// index 1 = spawn trap — touching it silently clears any saved checkpoint
 const checkpoint = [
     { x: 850 + platforms[3].width / 2, y: platforms[3].y - platforms[3].height - 20, width: 40, height: 40 },
-    { x: 10, y: WORLD_HEIGHT - 70, height: 40, width: 40, },
+    { x: 10, y: WORLD_HEIGHT - 70, height: 40, width: 40 },
 ];
 
 const invisible_platform = [
@@ -170,9 +172,9 @@ function collideRect(a, b) {
 }
 
 function death() {
-    if (state.checkpointSet) {
-        player.x = 850 + platforms[3].width / 2;
-        player.y = platforms[3].y - platforms[3].height - 20;
+    if (state.latestCheckpoint !== null) {
+        player.x = checkpoint[state.latestCheckpoint].x;
+        player.y = checkpoint[state.latestCheckpoint].y;
     } else {
         player.x = 10;
         player.y = WORLD_HEIGHT - 70;
@@ -486,9 +488,10 @@ function resolveCollisions(dx, dy) {
         if (hit) applyButtonEffect(b);
     });
 
-    checkpoint.forEach(c => {
+    checkpoint.forEach((c, i) => {
         if (collideRect(new_x_rect, c) || collideRect(new_y_rect, c)) {
-            state.checkpointSet = true;
+            // index 1 is the spawn trap — touching it wipes any saved checkpoint
+            state.latestCheckpoint = i === 1 ? null : i;
         }
     });
 
@@ -656,17 +659,17 @@ function draw() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = 1;
     }
-    
+
     const isGreenLight = !state.redLight;
     const timerValue = state.redLight ? state.redLightTimer : state.greenLightTimer;
     const text = Math.ceil(timerValue / 60);
-    
+
     if (isGreenLight && text <= 3 && text >= 1) {
         // frames elapsed since this number first appeared (0 → 59)
         const framesSinceChange = text * 60 - timerValue;
         const popDuration = 15;
         const popScale = 1 + Math.max(0, 1 - framesSinceChange / popDuration) * 0.8;
-    
+
         ctx.save();
         ctx.fillStyle = "white";
         ctx.font = `${Math.round(60 * popScale)}px sans-serif`;
