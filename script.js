@@ -52,6 +52,8 @@ const conveyer = [
     { x: 200, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1 },
 ];
 
+const meteors = [];
+
 const platforms = [
     { width: 100, height: 20, x: 200, y: grass.y - grass.height - 30, friction: 1 },
     { width: 200, height: 20, x: 485, y: canvas.height - 134, friction: 1 },
@@ -194,6 +196,8 @@ document.addEventListener("keyup", e => {
 });
 
 let paywall_timer = 2400;
+let meteor_timer = 500;
+let meteor_time = 0;
 let time = 0;
 let random_controls = 1200;
 let counter = 0;
@@ -674,6 +678,13 @@ function move() {
 
     });
 
+    meteors.forEach((meteor) => {
+
+        meteor.x += meteor.dx;
+        meteor.y += meteor.dy;
+        
+    });
+
     player.x += dx;
     player.y += dy;
 
@@ -737,6 +748,10 @@ function move() {
         }
     });
 
+}
+
+function randint(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function draw() {
@@ -850,6 +865,19 @@ function draw() {
 
     });
 
+    ctx.fillStyle = "#B5651D";
+
+    meteors.forEach((meteor) => {
+
+        ctx.fillRect(
+            meteor.x,
+            meteor.y,
+            meteor.width,
+            meteor.height
+        )
+        
+    });
+
     ctx.fillStyle = "#FF6B00";
     ctx.globalAlpha = "0.75";
 
@@ -900,7 +928,23 @@ function loop() {
 
     }
 
+    if (meteor_time > meteor_timer) {
+
+        meteor_time = 0;
+
+        meteors.push({
+            x: randint(0, canvas.width),
+            y: 0,
+            width: randint(20, 50),
+            height: randint(20, 50),
+            dx: randint(-3, 3),
+            dy: randint(2, 5)
+        });
+
+    }
+
     time++;
+    meteor_time++;
     counter++;
 
     updateMovingPlatforms();
