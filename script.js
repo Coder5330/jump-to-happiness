@@ -1,6 +1,7 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
-canvas.width = 1280;
+const WORLD_WIDTH = 1650;
+canvas.width = 1650;
 canvas.height = 2560;
 
 const camera = { x: 0, y: 0 };
@@ -65,11 +66,11 @@ const platforms = [
     { width: 20, height: 10, x: 200, y: canvas.height - 674, friction: 1 },
     { width: 5, height: 2, x: 410, y: canvas.height - 724, friction: 1 },
     { width: 300, height: 20, x: wind_zones[0].x, y: wind_zones[0].y + wind_zones[0].height, friction: 1 },
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 100,y:canvas.height-814 - 15,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 200,y:canvas.height-814 - 35,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 300,y:canvas.height-814 - 60,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 400,y:canvas.height-814 - 80,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 500,y:canvas.height-814 - 95,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 100,y:canvas.height-514,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 200,y:canvas.height-614,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 300,y:canvas.height-714,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 400,y:canvas.height-814,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 500,y:canvas.height-914,friction:1},
 ];
 
 const wall = [
@@ -754,11 +755,9 @@ function move() {
 
     }
 
-    if (player.x + player.width > canvas.width) {
-
-        player.x = canvas.width - player.width;
+    if (player.x + player.width > WORLD_WIDTH) {
+        player.x = WORLD_WIDTH - player.width;
         player.velocityX = 0;
-
     }
 
     if (player.y < 0) {
