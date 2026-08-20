@@ -647,6 +647,8 @@ function draw() {
     });
     ctx.globalAlpha = 1;
 
+    ctx.restore();
+
     if (state.redLight) {
         ctx.globalAlpha = 0.5;
         ctx.fillStyle = "red";
@@ -654,10 +656,8 @@ function draw() {
         ctx.globalAlpha = 1;
     }
 
-    ctx.restore();
-
     ctx.fillStyle = "white";
-    ctx.font = "16px sans-serif";
+    ctx.font = "30px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     
