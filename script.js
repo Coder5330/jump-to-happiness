@@ -66,10 +66,10 @@ const platforms = [
     { width: 20, height: 10, x: 200, y: canvas.height - 674, friction: 1 },
     { width: 5, height: 2, x: 410, y: canvas.height - 724, friction: 1 },
     { width: 300, height: 20, x: wind_zones[0].x, y: wind_zones[0].y + wind_zones[0].height, friction: 1 },
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 100,y:canvas.height-514,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 200,y:canvas.height-614,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 300,y:canvas.height-714,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 400,y:canvas.height-814,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 100,y:canvas.height-714,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 200,y:canvas.height-764,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 300,y:canvas.height-814,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 400,y:canvas.height-864,friction:1},
     {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 500,y:canvas.height-914,friction:1},
 ];
 
