@@ -196,7 +196,7 @@ document.addEventListener("keyup", e => {
 });
 
 let paywall_timer = 2400;
-let meteor_timer = 1;
+let meteor_timer = 90;
 let meteor_time = 0;
 let time = 0;
 let random_controls = 1200;
@@ -678,11 +678,20 @@ function move() {
 
     });
 
-    meteors.forEach((meteor) => {
-
+    for (let i = meteors.length - 1; i >= 0; i--) {
+        const meteor = meteors[i];
         meteor.x += meteor.dx;
         meteor.y += meteor.dy;
-        
+    
+        if (meteor.y > canvas.height) {
+            meteors.splice(i, 1);
+        }
+    }
+
+    meteors.forEach(meteor => {
+        if (collideRect(player, meteor)) {
+            death();
+        }
     });
 
     player.x += dx;
