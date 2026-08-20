@@ -31,7 +31,7 @@ const state = {
     redLightTimer: 300,
     greenLightTimer: 900,
     lavaHeight: WORLD_HEIGHT,
-    lavaRiseSpeed: 0.2,
+    lavaRiseSpeed: 0.05,
 };
 
 const camera = { x: 0, y: 0 };
@@ -191,6 +191,7 @@ function death() {
     }
 
     state.currentLocations = [];
+    state.lavaHeight = WORLD_HEIGHT;
 }
 
 function applyButtonEffect(b) {
