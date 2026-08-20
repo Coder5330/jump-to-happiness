@@ -55,9 +55,9 @@ const BOOST_TIME = 20;
 const BOOST_CD = 400;
 
 const conveyer = [
-    { x: 1470, y: WORLD_HEIGHT - 814 - 135, width: 100, height: 20, dir: -1 },
-    { x: 700, y: wind_zones[0].y - wind_zones[0].height - 90, width: 100, height: 20, dir: -1 },
-    { x: 200, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1 },
+    { x: 1470, y: WORLD_HEIGHT - 814 - 135, width: 100, height: 20, dir: -1, onCooldown: false },
+    { x: 700, y: wind_zones[0].y - wind_zones[0].height - 90, width: 100, height: 20, dir: -1, onCooldown: false },
+    { x: 200, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1, onCooldown: false },
 ];
 
 const meteors = [];
@@ -547,43 +547,44 @@ function move() {
     conveyer.forEach(belt => {
 
         if (!collideRect(player, belt)) return;
-
+    
         const verticalHit = collideRect(new_y_rect, belt);
         const sideHit = collideRect(new_x_rect, belt) && !verticalHit;
-
-        if (sideHit && !onCooldown) {
-
-            onCooldown = true;
-            setTimeout(() => { onCooldown = false; }, BOOST_CD);
-
+    
+        if (sideHit && !belt.onCooldown) {
+    
+            belt.onCooldown = true;
+            setTimeout(() => { belt.onCooldown = false; }, BOOST_CD);
+    
             launchDir = belt.dir;
             boosting = BOOST_TIME;
             player.velocity = BOOST_POP;
-            dx = 0;
-
+            player.velocityX = BOOST_SPEED * launchDir;
+            dx = player.velocityX;
+    
         } else if (sideHit) {
-
+    
             dx = 0;
-
+    
         }
-
+    
         if (verticalHit) {
-
+    
             if (player.velocity > 0) {
-
+    
                 dy = belt.y - player.height - player.y;
                 player.velocity = 0;
                 player.ground = true;
-
+    
             } else {
-
+    
                 dy = belt.y + belt.height - player.y;
                 player.velocity = 0;
-
+    
             }
-
+    
         }
-
+    
     });
 
     invisible_platform.forEach(invis => {
