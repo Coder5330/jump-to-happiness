@@ -30,6 +30,8 @@ const state = {
     redLight: false,
     redLightTimer: 300,
     greenLightTimer: 900,
+    lavaHeight: WORLD_HEIGHT,
+    lavaRiseSpeed: 0.2,
 };
 
 const camera = { x: 0, y: 0 };
@@ -556,6 +558,15 @@ function checkHazards() {
     });
 }
 
+function checkLava() {
+    const lavaRect = { x: 0, y: state.lavaHeight, width: WORLD_WIDTH, height: WORLD_HEIGHT - state.lavaHeight };
+
+    if (collideRect(player, lavaRect)) {
+        death();
+        player.velocity = 0;
+    }
+}
+
 function recordTrail() {
     state.currentLocations.push({ x: player.x, y: player.y });
 
@@ -590,6 +601,7 @@ function move() {
 
     clampPlayerToWorld();
     checkHazards();
+    checkLava();
     recordTrail();
 }
 
@@ -650,6 +662,9 @@ function draw() {
         if (pos) ctx.fillRect(pos.x, pos.y, player.width, player.height);
     });
     ctx.globalAlpha = 1;
+
+    ctx.fillStyle = "#FF3300";
+    ctx.fillRect(0, state.lavaHeight, WORLD_WIDTH, WORLD_HEIGHT - state.lavaHeight);
 
     ctx.restore();
 
@@ -747,6 +762,9 @@ function loop() {
             state.redLightTimer = 300;
         }
     }
+
+    // rises forever — no ceiling, no escape once it catches up
+    state.lavaHeight -= state.lavaRiseSpeed;
 
     draw();
     requestAnimationFrame(loop);
