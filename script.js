@@ -52,6 +52,8 @@ const conveyer = [
     { x: 200, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1 },
 ];
 
+const meteors = [];
+
 const platforms = [
     { width: 100, height: 20, x: 200, y: grass.y - grass.height - 30, friction: 1 },
     { width: 200, height: 20, x: 485, y: canvas.height - 134, friction: 1 },
@@ -194,6 +196,8 @@ document.addEventListener("keyup", e => {
 });
 
 let paywall_timer = 2400;
+let meteor_timer = 90;
+let meteor_time = 0;
 let time = 0;
 let random_controls = 1200;
 let counter = 0;
@@ -211,6 +215,56 @@ let mpDirection = -1;
 const MP_SPEED = 2;
 const MP_LEFT_BOUND = 350;
 const MP_RIGHT_BOUND = 550;
+
+function drawMeteor(m) {
+
+    const cx = m.x + m.width / 2;
+    const cy = m.y + m.height / 2;
+    const rx = m.width / 2;
+    const ry = m.height / 2;
+
+    // jagged outline — use a stored seed so it doesn't jitter every frame
+    ctx.beginPath();
+
+    const points = m.shape; // precomputed offsets, see below
+
+    points.forEach((p, i) => {
+        const px = cx + Math.cos(p.angle) * rx * p.r;
+        const py = cy + Math.sin(p.angle) * ry * p.r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    });
+
+    ctx.closePath();
+
+    const grad = ctx.createRadialGradient(
+        cx - rx * 0.3, cy - ry * 0.3, rx * 0.1,
+        cx, cy, rx
+    );
+    grad.addColorStop(0, "#C97A3D");
+    grad.addColorStop(0.6, "#8B4A1F");
+    grad.addColorStop(1, "#4A2510");
+
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.strokeStyle = "#2E1608";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+}
+
+function makeMeteorShape() {
+    const numPoints = randint(7, 10);
+    const shape = [];
+    for (let i = 0; i < numPoints; i++) {
+        shape.push({
+            angle: (i / numPoints) * Math.PI * 2,
+            r: 0.7 + Math.random() * 0.3 // 0.7–1.0, creates lumps
+        });
+    }
+    return shape;
+}
 
 function updateMovingPlatforms() {
 
@@ -674,6 +728,22 @@ function move() {
 
     });
 
+    for (let i = meteors.length - 1; i >= 0; i--) {
+        const meteor = meteors[i];
+        meteor.x += meteor.dx;
+        meteor.y += meteor.dy;
+    
+        if (meteor.y > canvas.height) {
+            meteors.splice(i, 1);
+        }
+    }
+
+    meteors.forEach(meteor => {
+        if (collideRect(player, meteor)) {
+            death();
+        }
+    });
+
     player.x += dx;
     player.y += dy;
 
@@ -737,6 +807,10 @@ function move() {
         }
     });
 
+}
+
+function randint(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function draw() {
@@ -850,6 +924,8 @@ function draw() {
 
     });
 
+    meteors.forEach(drawMeteor);
+
     ctx.fillStyle = "#FF6B00";
     ctx.globalAlpha = "0.75";
 
@@ -901,6 +977,7 @@ function loop() {
     }
 
     time++;
+    meteor_time++;
     counter++;
 
     updateMovingPlatforms();
@@ -912,6 +989,26 @@ function loop() {
 
     camera.y =
         player.y - canvas.height / 2 + player.height / 2;
+
+    camera.x = Math.max(0, Math.min(camera.x, canvas.width - canvas.width));
+    camera.y = Math.max(0, Math.min(camera.y, canvas.height - canvas.height));
+    
+    
+    if (meteor_time > meteor_timer) {
+
+        meteor_time = 0;
+
+        meteors.push({
+            x: randint(camera.x, camera.x + canvas.width - 50),
+            y: camera.y,
+            width: randint(20, 50),
+            height: randint(20, 50),
+            dx: randint(-3, 3),
+            dy: randint(2, 5),
+            shape: makeMeteorShape()
+        });
+
+    }
 
     draw();
 
