@@ -546,44 +546,33 @@ function move() {
 
     conveyer.forEach(belt => {
 
-        if (!collideRect(player, belt)) return;
-
         const verticalHit = collideRect(new_y_rect, belt);
         const sideHit = collideRect(new_x_rect, belt) && !verticalHit;
-
+    
+        if (!verticalHit && !sideHit) return;
+    
         if (sideHit && !onCooldown) {
-
             onCooldown = true;
             setTimeout(() => { onCooldown = false; }, BOOST_CD);
-
             launchDir = belt.dir;
             boosting = BOOST_TIME;
             player.velocity = BOOST_POP;
             dx = 0;
-
         } else if (sideHit) {
-
             dx = 0;
-
         }
-
+    
         if (verticalHit) {
-
             if (player.velocity > 0) {
-
                 dy = belt.y - player.height - player.y;
                 player.velocity = 0;
                 player.ground = true;
-
             } else {
-
                 dy = belt.y + belt.height - player.y;
                 player.velocity = 0;
-
             }
-
         }
-
+    
     });
 
     invisible_platform.forEach(invis => {
