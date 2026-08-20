@@ -14,7 +14,7 @@ const state = {
     currentLocations: [],
     jumpBuffered: false,
     paywallTimer: 2400,
-    meteorTimer: 20,
+    meteorTimer: 90,
     meteorTime: 0,
     time: 0,
     randomControls: 1200,
@@ -90,7 +90,7 @@ const platforms = [
     { width: 50, height: 20, x: wind_zones[0].x + wind_zones[0].width + 200, y: WORLD_HEIGHT - 764, friction: 1 },
     { width: 50, height: 20, x: wind_zones[0].x + wind_zones[0].width + 300, y: WORLD_HEIGHT - 814, friction: 1 },
     { width: 50, height: 20, x: wind_zones[0].x + wind_zones[0].width + 400, y: WORLD_HEIGHT - 864, friction: 1 },
-    { width: 50, height: 20, x: wind_zones[0].x + wind_zones[0].width + 500, y: WORLD_HEIGHT - 914, friction: 1 },
+    { width: 50, height: 20, x: wind_zones[0].x + wind_zones[0].width + 500, y: WORLD_HEIGHT - 814 - 115, friction: 1 },
 ];
 
 const wall = [
@@ -125,7 +125,9 @@ const button = [
 ];
 
 const checkpoint = [
-    { x: 850 + platforms[3].width / 2, y: platforms[3].y - platforms[3].height - 20, width: 40, height: 40 },
+    { x: platforms[3].x + (platforms[3].width - 40) / 2, y: platforms[3].y - platforms[3].height - 20, width: 40, height: 40 },
+    { x: platforms[6].x + (platforms[6].width - 40) / 2, y: platforms[6].y - platforms[6].height - 20, width: 40, height: 40 },
+    { x: platforms[10].x + (platforms[10].width - 40) / 2, y: platforms[10].y - platforms[10].height - 20, width: 40, height: 40 },
     { x: 10, y: WORLD_HEIGHT - 70, height: 40, width: 40 },
 ];
 
@@ -396,10 +398,15 @@ function resolveCollisions(dx, dy) {
     });
 
     conveyer.forEach(belt => {
-        if (!collideRect(player, belt)) return;
+        const willHitX = collideRect(new_x_rect, belt);
+        const willHitY = collideRect(new_y_rect, belt);
+        if (!willHitX && !willHitY) return;
 
-        const verticalHit = collideRect(new_y_rect, belt);
-        const sideHit = collideRect(new_x_rect, belt) && !verticalHit;
+        const xOverlapBefore = player.x < belt.x + belt.width && player.x + player.width > belt.x;
+        const yOverlapBefore = player.y < belt.y + belt.height && player.y + player.height > belt.y;
+
+        const sideHit = !xOverlapBefore && yOverlapBefore && willHitX;
+        const verticalHit = !yOverlapBefore && xOverlapBefore && willHitY;
 
         if (sideHit && !state.onCooldown) {
             state.onCooldown = true;
