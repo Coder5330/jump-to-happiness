@@ -27,6 +27,9 @@ const state = {
     launchDir: 0,
     onCooldown: false,
     mpDirection: -1,
+    redLight: false,
+    redLightTimer: 300,
+    greenLightTimer: 900,
 };
 
 const camera = { x: 0, y: 0 };
@@ -572,6 +575,12 @@ function move() {
 
     updateMeteors();
 
+    if (state.redLight) {
+        if (dx !== 0 || dy !== 0) {
+            death();
+        }
+    }
+
     player.x += dx;
     player.y += dy;
 
@@ -638,7 +647,25 @@ function draw() {
     });
     ctx.globalAlpha = 1;
 
+    if (state.redLight) {
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = "red";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+    }
+
     ctx.restore();
+
+    ctx.fillStyle = "white";
+    ctx.font = "16px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    
+    const text = state.redLight
+        ? Math.ceil(state.redLightTimer / 60)
+        : Math.ceil(state.greenLightTimer / 60);
+    
+    ctx.fillText(text, canvas.width / 2, 20);
 }
 
 function loop() {
@@ -685,6 +712,22 @@ function loop() {
             dy: randint(2, 5),
             shape: makeMeteorShape(),
         });
+    }
+
+    if (state.redLight) {
+        state.redLightTimer--;
+        if (state.redLightTimer <= 0) {
+            state.redLight = false;
+            state.greenLightTimer = 900;
+            state.redLightTimer = 300;
+        }
+    } else {
+        state.greenLightTimer--;
+        if (state.greenLightTimer <= 0) {
+            state.redLight = true;
+            state.greenLightTimer = 900;
+            state.redLightTimer = 300;
+        }
     }
 
     draw();
