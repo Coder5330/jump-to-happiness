@@ -124,6 +124,7 @@ const button = [
 
 const checkpoint = [
     { x: 850 + platforms[3].width / 2, y: platforms[3].y - platforms[3].height - 20, width: 40, height: 40 },
+    { x: 10, y: WORLD_HEIGHT - 70, height: 40, width: 40, },
 ];
 
 const invisible_platform = [
