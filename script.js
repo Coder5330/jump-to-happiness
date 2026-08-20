@@ -1,14 +1,15 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const WORLD_WIDTH = 1650;
-canvas.width = 1650;
-canvas.height = 2560;
+const WORLD_HEIGHT = 2560;
+canvas.width = 800;
+canvas.height = 600;
 
 const camera = { x: 0, y: 0 };
 
 const player = {
     x: 10,
-    y: canvas.height - 70,
+    y: WORLD_HEIGHT - 70,
     height: 30,
     width: 30,
     gravity: 0.5,
@@ -24,8 +25,8 @@ let current_locations = [];
 
 const grass = {
     x: 0,
-    y: canvas.height - 30,
-    width: canvas.width,
+    y: WORLD_HEIGHT - 30,
+    width: WORLD_WIDTH,
     height: 30,
     friction: 1,
 };
@@ -33,7 +34,7 @@ const grass = {
 const wind_zones = [
     {
         x: 600,
-        y: canvas.height - 814,
+        y: WORLD_HEIGHT - 814,
         width: 300,
         height: 150,
         forceX: 2.5,
@@ -48,7 +49,7 @@ const BOOST_TIME = 20;
 const BOOST_CD = 400;
 
 const conveyer = [
-    { x: 1470, y: canvas.height - 814 - 135, width: 100, height: 20, dir: -1 },
+    { x: 1470, y: WORLD_HEIGHT - 814 - 135, width: 100, height: 20, dir: -1 },
     { x: 700, y: wind_zones[0].y - wind_zones[0].height - 90, width: 100, height: 20, dir: -1 },
     { x: 200, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1 },
 ];
@@ -57,20 +58,20 @@ const meteors = [];
 
 const platforms = [
     { width: 100, height: 20, x: 200, y: grass.y - grass.height - 30, friction: 1 },
-    { width: 200, height: 20, x: 485, y: canvas.height - 134, friction: 1 },
-    { width: 100, height: 20, x: 850, y: canvas.height - 174, friction: 1 },
-    { width: 200, height: 20, x: 850, y: canvas.height - 354, friction: 1 },
-    { width: 50, height: 20, x: 700, y: canvas.height - 344, friction: 0.01 },
-    { width: 50, height: 20, x: 780, y: canvas.height - 454, friction: 0.08 },
-    { width: 200, height: 20, x: 100, y: canvas.height - 524, friction: 0.5 },
-    { width: 20, height: 10, x: 200, y: canvas.height - 674, friction: 1 },
-    { width: 5, height: 2, x: 410, y: canvas.height - 724, friction: 1 },
+    { width: 200, height: 20, x: 485, y: WORLD_HEIGHT - 134, friction: 1 },
+    { width: 100, height: 20, x: 850, y: WORLD_HEIGHT - 174, friction: 1 },
+    { width: 200, height: 20, x: 850, y: WORLD_HEIGHT - 354, friction: 1 },
+    { width: 50, height: 20, x: 700, y: WORLD_HEIGHT - 344, friction: 0.01 },
+    { width: 50, height: 20, x: 780, y: WORLD_HEIGHT - 454, friction: 0.08 },
+    { width: 200, height: 20, x: 100, y: WORLD_HEIGHT - 524, friction: 0.5 },
+    { width: 20, height: 10, x: 200, y: WORLD_HEIGHT - 674, friction: 1 },
+    { width: 5, height: 2, x: 410, y: WORLD_HEIGHT - 724, friction: 1 },
     { width: 300, height: 20, x: wind_zones[0].x, y: wind_zones[0].y + wind_zones[0].height, friction: 1 },
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 100,y:canvas.height-714,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 200,y:canvas.height-764,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 300,y:canvas.height-814,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 400,y:canvas.height-864,friction:1},
-    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 500,y:canvas.height-914,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 100,y:WORLD_HEIGHT-714,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 200,y:WORLD_HEIGHT-764,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 300,y:WORLD_HEIGHT-814,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 400,y:WORLD_HEIGHT-864,friction:1},
+    {width:50,height : 20,x: wind_zones[0].x + wind_zones[0].width + 500,y:WORLD_HEIGHT-914,friction:1},
 ];
 
 const wall = [
@@ -149,13 +150,13 @@ const invisible_platform = [
         width: 0.25,
         height: 0.25,
         x: 680,
-        y: canvas.height - 364,
+        y: WORLD_HEIGHT - 364,
     },
     {
         width: 20,
         height: 20,
         x: 650,
-        y: canvas.height - 454,
+        y: WORLD_HEIGHT - 454,
     },
     {
         width: 10,
@@ -176,7 +177,7 @@ const moving_platforms = [
         width: 15,
         height: 10,
         x: 600,
-        y: canvas.height - 524,
+        y: WORLD_HEIGHT - 524,
     }
 ];
 
@@ -297,7 +298,7 @@ function death() {
     } else {
 
         player.x = 10;
-        player.y = canvas.height - 70;
+        player.y = WORLD_HEIGHT - 70;
 
     }
 
@@ -734,7 +735,7 @@ function move() {
         meteor.x += meteor.dx;
         meteor.y += meteor.dy;
     
-        if (meteor.y > canvas.height) {
+        if (meteor.y > WORLD_HEIGHT) {
             meteors.splice(i, 1);
         }
     }
@@ -767,9 +768,9 @@ function move() {
 
     }
 
-    if (player.y + player.height > canvas.height) {
+    if (player.y + player.height > WORLD_HEIGHT) {
 
-        player.y = canvas.height - player.height;
+        player.y = WORLD_HEIGHT - player.height;
         player.velocity = 0;
         player.ground = true;
 
@@ -989,10 +990,10 @@ function loop() {
     camera.y =
         player.y - canvas.height / 2 + player.height / 2;
 
-    camera.x = Math.max(0, Math.min(camera.x, canvas.width - canvas.width));
-    camera.y = Math.max(0, Math.min(camera.y, canvas.height - canvas.height));
-    
-    
+    camera.x = Math.max(0, Math.min(camera.x, WORLD_WIDTH - canvas.width));
+    camera.y = Math.max(0, Math.min(camera.y, WORLD_HEIGHT - canvas.height));
+
+
     if (meteor_time > meteor_timer) {
 
         meteor_time = 0;
