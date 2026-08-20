@@ -216,6 +216,56 @@ const MP_SPEED = 2;
 const MP_LEFT_BOUND = 350;
 const MP_RIGHT_BOUND = 550;
 
+function drawMeteor(m) {
+
+    const cx = m.x + m.width / 2;
+    const cy = m.y + m.height / 2;
+    const rx = m.width / 2;
+    const ry = m.height / 2;
+
+    // jagged outline — use a stored seed so it doesn't jitter every frame
+    ctx.beginPath();
+
+    const points = m.shape; // precomputed offsets, see below
+
+    points.forEach((p, i) => {
+        const px = cx + Math.cos(p.angle) * rx * p.r;
+        const py = cy + Math.sin(p.angle) * ry * p.r;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    });
+
+    ctx.closePath();
+
+    const grad = ctx.createRadialGradient(
+        cx - rx * 0.3, cy - ry * 0.3, rx * 0.1,
+        cx, cy, rx
+    );
+    grad.addColorStop(0, "#C97A3D");
+    grad.addColorStop(0.6, "#8B4A1F");
+    grad.addColorStop(1, "#4A2510");
+
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.strokeStyle = "#2E1608";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+}
+
+function makeMeteorShape() {
+    const numPoints = randint(7, 10);
+    const shape = [];
+    for (let i = 0; i < numPoints; i++) {
+        shape.push({
+            angle: (i / numPoints) * Math.PI * 2,
+            r: 0.7 + Math.random() * 0.3 // 0.7–1.0, creates lumps
+        });
+    }
+    return shape;
+}
+
 function updateMovingPlatforms() {
 
     moving_platforms.forEach(platform => {
@@ -874,18 +924,7 @@ function draw() {
 
     });
 
-    ctx.fillStyle = "#B5651D";
-
-    meteors.forEach((meteor) => {
-
-        ctx.fillRect(
-            meteor.x,
-            meteor.y,
-            meteor.width,
-            meteor.height
-        )
-        
-    });
+    meteors.forEach(drawMeteor);
 
     ctx.fillStyle = "#FF6B00";
     ctx.globalAlpha = "0.75";
@@ -965,7 +1004,8 @@ function loop() {
             width: randint(20, 50),
             height: randint(20, 50),
             dx: randint(-3, 3),
-            dy: randint(2, 5)
+            dy: randint(2, 5),
+            shape: makeMeteorShape()
         });
 
     }
