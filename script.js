@@ -196,7 +196,7 @@ document.addEventListener("keyup", e => {
 });
 
 let paywall_timer = 2400;
-let meteor_timer = 500;
+let meteor_timer = 1;
 let meteor_time = 0;
 let time = 0;
 let random_controls = 1200;
