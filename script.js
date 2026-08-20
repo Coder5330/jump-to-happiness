@@ -937,21 +937,6 @@ function loop() {
 
     }
 
-    if (meteor_time > meteor_timer) {
-
-        meteor_time = 0;
-
-        meteors.push({
-            x: randint(0, canvas.width),
-            y: 0,
-            width: randint(20, 50),
-            height: randint(20, 50),
-            dx: randint(-3, 3),
-            dy: randint(2, 5)
-        });
-
-    }
-
     time++;
     meteor_time++;
     counter++;
@@ -965,6 +950,25 @@ function loop() {
 
     camera.y =
         player.y - canvas.height / 2 + player.height / 2;
+
+    camera.x = Math.max(0, Math.min(camera.x, canvas.width - canvas.width));
+    camera.y = Math.max(0, Math.min(camera.y, canvas.height - canvas.height));
+    
+    
+    if (meteor_time > meteor_timer) {
+
+        meteor_time = 0;
+
+        meteors.push({
+            x: randint(camera.x, camera.x + canvas.width - 50),
+            y: camera.y,
+            width: randint(20, 50),
+            height: randint(20, 50),
+            dx: randint(-3, 3),
+            dy: randint(2, 5)
+        });
+
+    }
 
     draw();
 
