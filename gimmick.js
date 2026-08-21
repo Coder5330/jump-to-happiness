@@ -1,5 +1,5 @@
 const GIMMICK = {
-    playDuration: 600,
+    playDuration: 1800,
     restDuration: 300,
 
     scrambleInterval: 1200,
