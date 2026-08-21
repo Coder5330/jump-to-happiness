@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 const WORLD_WIDTH = 1650;
 const WORLD_HEIGHT = 2560;
 
-function resizeCanvas()
+function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
