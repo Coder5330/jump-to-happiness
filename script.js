@@ -33,7 +33,7 @@ const state = {
     lavaHeight: WORLD_HEIGHT,
     lavaRiseSpeed: 0.05,
     homeMeteorChance: 0.2,
-    isResting: false,
+    isResting: true,
     MandatoryRest: 10000,
     RestTime: 500,
 };
@@ -719,20 +719,22 @@ function draw() {
 }
 
 function loop() {
-    if (state.resting){
+    requestAnimationFrame(loop);
+
+    if (state.resting) {
         state.RestTime--;
-        
-        if (state.RestTime <= 0){
+        if (state.RestTime <= 0) {
             state.resting = false;
             state.MandatoryRest = 10000;
         }
+        draw();
         return;
-    } else {
-        state.MandatoryRest--;
-        if (state.MandatoryRest <= 0){
-            state.resting = true;
-            state.RestTime = 5000;
-        }
+    }
+
+    state.MandatoryRest--;
+    if (state.MandatoryRest <= 0) {
+        state.resting = true;
+        state.RestTime = 5000;
     }
     if (state.counter > state.randomControls) {
         state.changeControls = !state.changeControls;
