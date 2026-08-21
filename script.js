@@ -33,7 +33,7 @@ const state = {
     lavaHeight: WORLD_HEIGHT,
     lavaRiseSpeed: 0.05,
     homeMeteorChance: 0.2,
-    isResting: false,
+    isResting: true,
     MandatoryRest: 10000,
     RestTime: 500,
 };
