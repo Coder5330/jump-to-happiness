@@ -1,6 +1,4 @@
 // constants
-const WORLD_WIDTH = 1650;
-const WORLD_HEIGHT = 2560;
 const BOOST_SPEED = 32;
 const BOOST_POP = -15;
 const BOOST_TIME = 20;
