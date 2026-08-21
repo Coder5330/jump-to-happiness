@@ -32,6 +32,9 @@ const state = {
     greenLightTimer: 900,
     lavaHeight: WORLD_HEIGHT,
     lavaRiseSpeed: 0.05,
+    isResting: false,
+    MandatoryRest: 10000,
+    RestTime: 500,
 };
 
 const camera = { x: 0, y: 0 };
@@ -228,6 +231,14 @@ function makeMeteorShape() {
     }
 
     return shape;
+}
+
+function MandatoryRest(){
+    ctx.fillStyle = "rgba(255,255,255,0)";
+    ctx.fillRect(0,0,canvas.width, canvas.height);
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("Mandatory Rest Break", canvas.width / 2, canvas.height / 2);
 }
 
 function drawMeteor(m) {
@@ -703,9 +714,25 @@ function draw() {
         ctx.textBaseline = "middle";
         ctx.fillText(text, canvas.width / 2, 20);
     }
+    if (state.resting) MandatoryRest();
 }
 
 function loop() {
+    if (state.resting){
+        state.RestTime--;
+        
+        if (state.RestTime <= 0){
+            state.resting = false;
+            state.MandatoryRest = 10000;
+        }
+        return;
+    } else {
+        state.MandatoryRest--;
+        if (state.MandatoryRest <= 0){
+            state.resting = true;
+            state.RestTime = 5000;
+        }
+    }
     if (state.counter > state.randomControls) {
         state.changeControls = !state.changeControls;
         state.counter = 0;
@@ -750,7 +777,7 @@ function loop() {
             shape: makeMeteorShape(),
         });
     }
-
+    
     if (state.redLight) {
         state.redLightTimer--;
         if (state.redLightTimer <= 0) {
