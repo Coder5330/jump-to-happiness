@@ -146,6 +146,13 @@ const moving_platforms = [
     { width: 15, height: 10, x: 600, y: WORLD_HEIGHT - 524 },
 ];
 
+const goal = {
+    x: conveyer[2].x + (conveyer[2].width - 40) / 2, 
+    y: conveyer[2].y - (conveyer[2].height + 40) / 2,
+    width: 40,
+    height: 40,
+}
+
 const MP_SPEED = 2;
 const MP_LEFT_BOUND = 350;
 const MP_RIGHT_BOUND = 550;
@@ -668,6 +675,9 @@ function draw() {
     checkpoint.forEach(c => {
         ctx.fillRect(c.x, c.y, c.width, c.height);
     });
+
+    ctx.fillStyle = "purple";
+    ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
 
     meteors.forEach(drawMeteor);
 
