@@ -172,7 +172,7 @@ function level2() {
 
     const invisible_platform = [
         { x: 100, y: 2440, width: 40, height: 40 },
-        { x: 250, y: 2340, width: 50, height: 50 },
+        { x: 250, y: 2390, width: 50, height: 50 },
         { x: 440, y: 2240, width: 60, height: 50 },
         { x: 140, y: 2140, width: 110, height: 60 },
         { x: 1090, y: 1750, width: 90, height: 190 },
