@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 const WORLD_WIDTH = 1650;
 const WORLD_HEIGHT = 2560;
 
-function resizeCanvas() {
+function resizeCanvas()
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
@@ -760,8 +760,8 @@ function loop() {
                 y: y,
                 width: randint(20, 50),
                 height: randint(20, 50),
-                dx: ndx, // to be continued
-                dy: ndy,
+                dx: ndx * 10,
+                dy: ndy * 10,
                 shape: makeMeteorShape(),
             });
         } else {
