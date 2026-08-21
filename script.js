@@ -9,6 +9,9 @@ resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 const state = {
+    levelIndex: 0,
+    spawn: { x: 0, y: 0 },
+
     currentLocations: [],
     jumpBuffered: false,
 
@@ -33,7 +36,7 @@ const state = {
     redLightTimer: 300,
     greenLightTimer: 900,
 
-    lavaHeight: WORLD_HEIGHT,
+    lavaHeight: 0,
 
     resting: false,
     playTime: 10000,
@@ -43,8 +46,8 @@ const state = {
 const camera = { x: 0, y: 0 };
 
 const player = {
-    x: 10,
-    y: WORLD_HEIGHT - 70,
+    x: 0,
+    y: 0,
     height: 30,
     width: 30,
     gravity: 0.5,
@@ -74,22 +77,67 @@ function randint(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function death() {
-    if (state.latestCheckpoint !== null) {
-        player.x = checkpoint[state.latestCheckpoint].x;
-        player.y = checkpoint[state.latestCheckpoint].y;
-    } else {
-        player.x = 10;
-        player.y = WORLD_HEIGHT - 70;
-    }
+function startLevel(index) {
+    const L = loadLevel(index);
+
+    state.levelIndex = index;
+    state.spawn = L.spawn;
+
+    state.latestCheckpoint = null;
+    state.invisMessageShown = true;
+    state.currentLocations = [];
+    clones.length = 0;
+
+    state.boosting = 0;
+    state.launchDir = 0;
+    state.onCooldown = false;
+    state.mpDirection = -1;
+
+    state.redLight = false;
+    state.redLightTimer = GIMMICK.redDuration;
+    state.greenLightTimer = GIMMICK.greenDuration;
+
+    state.meteorTime = 0;
+    state.time = 0;
+    state.counter = 0;
+
+    resetLava();
+    respawn();
+}
+
+function respawn() {
+    const spot = state.latestCheckpoint !== null
+        ? checkpoint[state.latestCheckpoint]
+        : state.spawn;
+
+    player.x = spot.x;
+    player.y = spot.y;
     player.velocityX = 0;
     player.velocity = 0;
-    state.boosting = 0;
+    player.ground = false;
+}
+
+function checkGoal() {
+    if (goal.width === 0) return;
+    if (!collideRect(player, goal)) return;
+
+    const next = state.levelIndex + 1;
+    if (next >= LEVELS.length) {
+        alert("you made it. happiness achieved");
+        startLevel(0);
+    } else {
+        startLevel(next);
+    }
+}
+
+function death() {
     if (state.currentLocations.length > 0) {
         clones.push({ locations: state.currentLocations, frames: 0 });
     }
     state.currentLocations = [];
+    state.boosting = 0;
     resetLava();
+    respawn();
 }
 
 function applyButtonEffect(b) {
@@ -102,9 +150,9 @@ function applyButtonEffect(b) {
         player.y = b.teleport_coords.y;
     } else if (chance === 2) {
         death();
-    } else {
-        player.x = 270;
-        player.y = grass.y - grass.height - 30 - platforms[0].height;
+    } else if (platforms.length > 0) {
+        player.x = platforms[0].x + 70;
+        player.y = platforms[0].y - player.height;
     }
     player.velocity = 0;
     player.velocityX = 0;
@@ -140,6 +188,7 @@ function loop() {
 
     updateMovingPlatforms();
     move();
+    checkGoal();
     updateCamera();
 
     state.meteorTime++;
@@ -154,4 +203,5 @@ function loop() {
     draw();
 }
 
+startLevel(0);
 loop();
