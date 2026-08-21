@@ -318,10 +318,7 @@ function resolveCollisions(dx, dy) {
         player.ground = true;
     }
 
-    if (
-        (collideRect(new_x_rect, platforms[5]) || collideRect(new_y_rect, platforms[5])) &&
-        state.invisMessageShown
-    ) {
+    if (platforms[5] && (collideRect(new_x_rect, platforms[5]) || collideRect(new_y_rect, platforms[5])) && state.invisMessageShown) {
         alert("From here, some platforms become invisible, have fun! :)");
         state.invisMessageShown = false;
     }
