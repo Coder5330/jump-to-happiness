@@ -69,7 +69,7 @@ function draw() {
 
     ctx.fillStyle = "#4A8FA8";
     ctx.fillRect(fake_platform.x, fake_platform.y, fake_platform.width, fake_platform.height);
-    ctx.fillRect(moving_platforms[0].x, moving_platforms[0].y, moving_platforms[0].width, moving_platforms[0].height);
+    moving_platforms.forEach(p => ctx.fillRect(p.x, p.y, p.width, p.height));
 
     ctx.fillStyle = "black";
     button.forEach(b => {
