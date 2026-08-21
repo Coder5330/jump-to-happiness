@@ -148,7 +148,7 @@ const moving_platforms = [
 
 const goal = {
     x: conveyer[2].x + (conveyer[2].width - 40) / 2,
-    y: conveyer[2].y - (conveyer[2].height + 40) / 2,
+    y: conveyer[2].y - conveyer[2].height,
     width: 40,
     height: 40,
 }
