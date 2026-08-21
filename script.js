@@ -660,7 +660,7 @@ function draw() {
     meteors.forEach(drawMeteor);
 
     ctx.fillStyle = "#FF6B00";
-    ctx.globalAlpha = 0.75;
+    ctx.globalAlpha = 0.1;
     clones.forEach(clone => {
         const idx = Math.min(clone.frames, clone.locations.length - 1);
         const pos = clone.locations[idx];
