@@ -183,6 +183,7 @@ function level2() {
         { x: 900, y: 1090, width: 40, height: 50 },
         { x: 710, y: 750, width: 50, height: 50 },
         { x: 510, y: 650, width: 50, height: 50 },
+        { x: 390, y: 1940, width: 10, height: 10},
     ];
 
     const goal = { x: 160, y: 790, width: 70, height: 70 };
