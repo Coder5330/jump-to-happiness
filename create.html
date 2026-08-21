@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level Editor — jump to happiness</title>
+<style>
+    * { box-sizing: border-box; }
+    html, body {
+        margin: 0; padding: 0; height: 100%; overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #1b1f24; color: #e6e6e6;
+    }
+    #app { display: flex; height: 100vh; }
+
+    /* ---------- canvas ---------- */
+    #stage { flex: 1; position: relative; }
+    #editor { display: block; background: lightblue; cursor: crosshair; }
+    #hint {
+        position: absolute; left: 12px; bottom: 12px;
+        background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 6px;
+        font-size: 12px; color: #ddd; pointer-events: none; line-height: 1.6;
+    }
+    #coords {
+        position: absolute; right: 12px; bottom: 12px;
+        background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 6px;
+        font-size: 12px; font-variant-numeric: tabular-nums; pointer-events: none;
+    }
+
+    /* ---------- panel ---------- */
+    #panel {
+        width: 300px; background: #23282f; border-left: 1px solid #333;
+        display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .section { padding: 12px 14px; border-bottom: 1px solid #333; }
+    .section h2 {
+        margin: 0 0 8px; font-size: 11px; letter-spacing: 0.08em;
+        text-transform: uppercase; color: #8b97a5; font-weight: 600;
+    }
+    .palette { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+    .palette button {
+        display: flex; align-items: center; gap: 6px;
+        background: #2c323a; border: 1px solid #3a424c; color: #ddd;
+        padding: 6px 7px; border-radius: 5px; font-size: 11px;
+        cursor: pointer; text-align: left;
+    }
+    .palette button:hover { background: #353c46; }
+    .palette button.active { border-color: #6aa9ff; background: #33445c; color: #fff; }
+    .swatch {
+        width: 11px; height: 11px; border-radius: 2px; flex: none;
+        border: 1px solid rgba(255,255,255,0.35);
+    }
+
+    .row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .row label { flex: 0 0 92px; font-size: 12px; color: #a9b3bf; }
+    .row input[type="number"], .row input[type="text"] {
+        flex: 1; min-width: 0; background: #1b1f24; border: 1px solid #3a424c;
+        color: #e6e6e6; padding: 5px 7px; border-radius: 4px; font-size: 12px;
+        font-variant-numeric: tabular-nums;
+    }
+    .row input:focus { outline: none; border-color: #6aa9ff; }
+
+    .btn {
+        background: #2c323a; border: 1px solid #3a424c; color: #ddd;
+        padding: 7px 10px; border-radius: 5px; font-size: 12px; cursor: pointer;
+    }
+    .btn:hover { background: #353c46; }
+    .btn.primary { background: #2f6fd0; border-color: #2f6fd0; color: #fff; }
+    .btn.primary:hover { background: #3a7fe4; }
+    .btn.danger { background: #6a2a2a; border-color: #7d3434; color: #ffd8d8; }
+    .btn.danger:hover { background: #7d3434; }
+    .btn-row { display: flex; gap: 6px; }
+    .btn-row .btn { flex: 1; }
+
+    #selNone { font-size: 12px; color: #6f7987; font-style: italic; }
+    #selType { font-size: 12px; color: #6aa9ff; margin-bottom: 10px; font-weight: 600; }
+
+    #outWrap { display: none; }
+    #out {
+        width: 100%; height: 260px; background: #12161a; color: #b8e6b8;
+        border: 1px solid #3a424c; border-radius: 5px; padding: 9px;
+        font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px;
+        line-height: 1.45; resize: vertical; white-space: pre;
+    }
+    #warn { font-size: 11px; color: #ffb86b; margin-top: 8px; line-height: 1.5; }
+    .checkrow { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #a9b3bf; }
+</style>
+</head>
+<body>
+<div id="app">
+    <div id="stage">
+        <canvas id="editor"></canvas>
+        <div id="hint">
+            <b>Drag</b> on canvas to draw &nbsp;·&nbsp; <b>Click</b> to select<br>
+            <b>Space+drag</b> or middle-drag to pan &nbsp;·&nbsp; <b>Wheel</b> to zoom<br>
+            <b>Delete</b> removes &nbsp;·&nbsp; <b>Esc</b> deselects
+        </div>
+        <div id="coords">0, 0</div>
+    </div>
+
+    <div id="panel">
+        <div class="section">
+            <h2>Level</h2>
+            <div class="row"><label>Function</label><input type="text" id="fnName" value="level3"></div>
+            <div class="row"><label>Name</label><input type="text" id="lvName" value="New Level"></div>
+            <div class="row"><label>World W</label><input type="number" id="worldW" value="1650"></div>
+            <div class="row"><label>World H</label><input type="number" id="worldH" value="2560"></div>
+        </div>
+
+        <div class="section">
+            <h2>Place</h2>
+            <div class="palette" id="palette"></div>
+        </div>
+
+        <div class="section">
+            <h2>Selected</h2>
+            <div id="selType"></div>
+            <div id="selNone">Nothing selected.</div>
+            <div id="props"></div>
+            <div class="btn-row" style="margin-top:10px">
+                <button class="btn" id="dupBtn">Duplicate</button>
+                <button class="btn danger" id="delBtn">Delete</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Grid</h2>
+            <div class="checkrow">
+                <input type="checkbox" id="snapOn" checked>
+                <label for="snapOn" style="flex:none">Snap to</label>
+                <input type="number" id="snapSize" value="10" style="width:60px;background:#1b1f24;border:1px solid #3a424c;color:#e6e6e6;padding:4px 6px;border-radius:4px;font-size:12px">
+                <span>px</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Output</h2>
+            <div class="btn-row">
+                <button class="btn primary" id="genBtn">Generate code</button>
+                <button class="btn" id="clearBtn">Clear all</button>
+            </div>
+            <div id="warn"></div>
+            <div id="outWrap" style="margin-top:10px">
+                <textarea id="out" readonly spellcheck="false"></textarea>
+                <button class="btn" id="copyBtn" style="width:100%;margin-top:6px">Copy to clipboard</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===========================================================================
+// Type registry — mirrors what levels.js / hud.js expect
+// ===========================================================================
+
+const TYPES = {
+    grass:              { label: "Grass",      group: "grass",              single: true,  color: "green",                    w: 1650, h: 30,  extra: { friction: 1 } },
+    platform:           { label: "Platform",   group: "platforms",          single: false, color: "#4A8FA8",                  w: 100,  h: 20,  extra: { friction: 1 } },
+    conveyer:           { label: "Conveyor",   group: "conveyer",           single: false, color: "#FF6B00",                  w: 100,  h: 20,  extra: { dir: -1 } },
+    moving_platform:    { label: "Moving",     group: "moving_platforms",   single: false, color: "#7Fb2c8",                  w: 15,   h: 10,  extra: {} },
+    invisible_platform: { label: "Invisible",  group: "invisible_platform", single: false, color: "rgba(74,143,168,0.25)",    w: 20,   h: 20,  extra: {}, dashed: "#4A8FA8" },
+    wall:               { label: "Wall",       group: "wall",               single: false, color: "#555",                     w: 20,   h: 200, extra: {} },
+    spike:              { label: "Spike",      group: "spikes",             single: false, color: "red",                      w: 50,   h: 15,  extra: {} },
+    fake_spike:         { label: "Fake spike", group: "fake_spikes",        single: false, color: "#ff6666",                  w: 50,   h: 15,  extra: {}, dashed: "#ff0000" },
+    fake_sky:           { label: "Fake sky",   group: "fake_sky",           single: false, color: "rgba(255,0,0,0.12)",       w: 100,  h: 100, extra: {}, dashed: "#ff0000" },
+    fake_platform:      { label: "Fake plat",  group: "fake_platform",      single: true,  color: "#4A8FA8",                  w: 50,   h: 20,  extra: {}, dashed: "#ffffff" },
+    wind_zone:          { label: "Wind",       group: "wind_zones",         single: false, color: "rgba(0,206,209,0.25)",     w: 300,  h: 150, extra: { forceX: 2.5, forceY: -0.15, maxSpeedX: 8 } },
+    button:             { label: "Button",     group: "button",             single: false, color: "black",                    w: 60,   h: 30,  extra: { tx: 0, ty: 0 } },
+    checkpoint:         { label: "Checkpoint", group: "checkpoint",         single: false, color: "yellow",                   w: 40,   h: 40,  extra: {} },
+    goal:               { label: "Goal",       group: "goal",               single: true,  color: "purple",                   w: 40,   h: 40,  extra: {} },
+    spawn:              { label: "Spawn",      group: "spawn",              single: true,  color: "#FF6B00",                  w: 30,   h: 30,  extra: {}, fixedSize: true },
+};
+
+// Order the generated code emits collections in
+const EMIT_ORDER = [
+    "grass", "wind_zones", "conveyer", "platforms", "wall", "spikes",
+    "fake_sky", "fake_spikes", "fake_platform", "button", "checkpoint",
+    "invisible_platform", "moving_platforms", "goal",
+];
+
+// Key order inside each emitted object literal
+const KEY_ORDER = ["x", "y", "width", "height", "friction", "dir", "forceX", "forceY", "maxSpeedX"];
+
+
+// ===========================================================================
+// Editor state
+// ===========================================================================
+
+const canvas = document.getElementById("editor");
+const ctx = canvas.getContext("2d");
+
+let objects = [];
+let selected = null;
+let activeType = "platform";
+
+const view = { x: 0, y: 0, scale: 0.35 };
+let world = { w: 1650, h: 2560 };
+
+let drag = null;       // { mode, startWX, startWY, obj, offX, offY }
+let panning = false;
+let spaceDown = false;
+let lastMouse = { x: 0, y: 0 };
+
+
+// ===========================================================================
+// Canvas sizing
+// ===========================================================================
+
+function resize() {
+    const stage = document.getElementById("stage");
+    canvas.width = stage.clientWidth;
+    canvas.height = stage.clientHeight;
+    draw();
+}
+window.addEventListener("resize", resize);
+
+
+// ===========================================================================
+// Coordinate helpers
+// ===========================================================================
+
+function toWorld(sx, sy) {
+    return { x: sx / view.scale + view.x, y: sy / view.scale + view.y };
+}
+
+function snap(v) {
+    const on = document.getElementById("snapOn").checked;
+    const size = Math.max(1, parseInt(document.getElementById("snapSize").value, 10) || 1);
+    return on ? Math.round(v / size) * size : Math.round(v);
+}
+
+function hitTest(wx, wy) {
+    // topmost first
+    for (let i = objects.length - 1; i >= 0; i--) {
+        const o = objects[i];
+        if (wx >= o.x && wx <= o.x + o.width && wy >= o.y && wy <= o.y + o.height) return o;
+    }
+    return null;
+}
+
+
+// ===========================================================================
+// Object creation
+// ===========================================================================
+
+let nextId = 1;
+
+function makeObject(typeKey, x, y, w, h) {
+    const t = TYPES[typeKey];
+    const o = { id: nextId++, type: typeKey, x, y, width: w, height: h };
+    for (const [k, v] of Object.entries(t.extra)) o[k] = v;
+    return o;
+}
+
+function addObject(o) {
+    const t = TYPES[o.type];
+    if (t.single) objects = objects.filter(x => x.type !== o.type);
+    objects.push(o);
+    selected = o;
+    buildProps();
+    draw();
+}
+
+
+// ===========================================================================
+// Mouse
+// ===========================================================================
+
+canvas.addEventListener("mousedown", e => {
+    const rect = canvas.getBoundingClientRect();
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+    const w = toWorld(sx, sy);
+
+    if (e.button === 1 || spaceDown) {
+        panning = true;
+        lastMouse = { x: sx, y: sy };
+        return;
+    }
+    if (e.button !== 0) return;
+
+    // Resize handle on the selected object?
+    if (selected && !TYPES[selected.type].fixedSize) {
+        const hx = selected.x + selected.width;
+        const hy = selected.y + selected.height;
+        const tol = 8 / view.scale;
+        if (Math.abs(w.x - hx) < tol && Math.abs(w.y - hy) < tol) {
+            drag = { mode: "resize", obj: selected };
+            return;
+        }
+    }
+
+    const hit = hitTest(w.x, w.y);
+    if (hit) {
+        selected = hit;
+        drag = { mode: "move", obj: hit, offX: w.x - hit.x, offY: w.y - hit.y };
+        buildProps();
+        draw();
+        return;
+    }
+
+    // Start drawing a new object
+    const t = TYPES[activeType];
+    if (t.fixedSize) {
+        addObject(makeObject(activeType, snap(w.x - t.w / 2), snap(w.y - t.h / 2), t.w, t.h));
+        return;
+    }
+    drag = { mode: "draw", startWX: snap(w.x), startWY: snap(w.y), obj: null };
+});
+
+canvas.addEventListener("mousemove", e => {
+    const rect = canvas.getBoundingClientRect();
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+    const w = toWorld(sx, sy);
+
+    document.getElementById("coords").textContent = Math.round(w.x) + ", " + Math.round(w.y);
+
+    if (panning) {
+        view.x -= (sx - lastMouse.x) / view.scale;
+        view.y -= (sy - lastMouse.y) / view.scale;
+        lastMouse = { x: sx, y: sy };
+        draw();
+        return;
+    }
+    if (!drag) return;
+
+    if (drag.mode === "move") {
+        drag.obj.x = snap(w.x - drag.offX);
+        drag.obj.y = snap(w.y - drag.offY);
+    } else if (drag.mode === "resize") {
+        drag.obj.width = Math.max(1, snap(w.x - drag.obj.x));
+        drag.obj.height = Math.max(1, snap(w.y - drag.obj.y));
+    } else if (drag.mode === "draw") {
+        const x = Math.min(drag.startWX, snap(w.x));
+        const y = Math.min(drag.startWY, snap(w.y));
+        const width = Math.abs(snap(w.x) - drag.startWX);
+        const height = Math.abs(snap(w.y) - drag.startWY);
+        if (!drag.obj) {
+            if (width < 2 && height < 2) { draw(); return; }
+            drag.obj = makeObject(activeType, x, y, width, height);
+            const t = TYPES[activeType];
+            if (t.single) objects = objects.filter(o => o.type !== activeType);
+            objects.push(drag.obj);
+            selected = drag.obj;
+        }
+        drag.obj.x = x; drag.obj.y = y;
+        drag.obj.width = width; drag.obj.height = height;
+    }
+    buildProps();
+    draw();
+});
+
+window.addEventListener("mouseup", () => {
+    if (drag && drag.mode === "draw" && drag.obj === null) {
+        // Click without dragging: drop a default-sized object
+        const t = TYPES[activeType];
+        addObject(makeObject(activeType, drag.startWX, drag.startWY, t.w, t.h));
+    }
+    if (drag && drag.obj && (drag.obj.width < 1 || drag.obj.height < 1)) {
+        objects = objects.filter(o => o !== drag.obj);
+        selected = null;
+        buildProps();
+    }
+    drag = null;
+    panning = false;
+    draw();
+});
+
+canvas.addEventListener("wheel", e => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+    const before = toWorld(sx, sy);
+    const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
+    view.scale = Math.min(4, Math.max(0.05, view.scale * factor));
+    const after = toWorld(sx, sy);
+    view.x += before.x - after.x;
+    view.y += before.y - after.y;
+    draw();
+}, { passive: false });
+
+canvas.addEventListener("contextmenu", e => e.preventDefault());
+
+
+// ===========================================================================
+// Keyboard
+// ===========================================================================
+
+document.addEventListener("keydown", e => {
+    const typing = ["INPUT", "TEXTAREA"].includes(document.activeElement.tagName);
+    if (e.key === " " && !typing) { spaceDown = true; e.preventDefault(); }
+    if (typing) return;
+    if ((e.key === "Delete" || e.key === "Backspace") && selected) {
+        objects = objects.filter(o => o !== selected);
+        selected = null;
+        buildProps(); draw();
+        e.preventDefault();
+    }
+    if (e.key === "Escape") { selected = null; buildProps(); draw(); }
+});
+document.addEventListener("keyup", e => { if (e.key === " ") spaceDown = false; });
+
+
+// ===========================================================================
+// Palette
+// ===========================================================================
+
+function buildPalette() {
+    const el = document.getElementById("palette");
+    el.innerHTML = "";
+    for (const [key, t] of Object.entries(TYPES)) {
+        const b = document.createElement("button");
+        b.dataset.type = key;
+        if (key === activeType) b.classList.add("active");
+        const sw = document.createElement("span");
+        sw.className = "swatch";
+        sw.style.background = t.color;
+        b.appendChild(sw);
+        b.appendChild(document.createTextNode(t.label));
+        b.onclick = () => {
+            activeType = key;
+            [...el.children].forEach(c => c.classList.toggle("active", c.dataset.type === key));
+        };
+        el.appendChild(b);
+    }
+}
+
+
+// ===========================================================================
+// Property panel
+// ===========================================================================
+
+function numRow(label, value, onChange, step) {
+    const row = document.createElement("div");
+    row.className = "row";
+    const l = document.createElement("label");
+    l.textContent = label;
+    const i = document.createElement("input");
+    i.type = "number";
+    i.value = value;
+    if (step) i.step = step;
+    i.oninput = () => { onChange(parseFloat(i.value)); draw(); };
+    row.appendChild(l); row.appendChild(i);
+    return row;
+}
+
+function buildProps() {
+    const props = document.getElementById("props");
+    const none = document.getElementById("selNone");
+    const typeLabel = document.getElementById("selType");
+    props.innerHTML = "";
+
+    if (!selected) {
+        none.style.display = "block";
+        typeLabel.textContent = "";
+        return;
+    }
+    none.style.display = "none";
+    const t = TYPES[selected.type];
+    typeLabel.textContent = t.label;
+
+    props.appendChild(numRow("x", selected.x, v => selected.x = v));
+    props.appendChild(numRow("y", selected.y, v => selected.y = v));
+    if (!t.fixedSize) {
+        props.appendChild(numRow("width", selected.width, v => selected.width = v));
+        props.appendChild(numRow("height", selected.height, v => selected.height = v));
+    }
+    for (const k of Object.keys(t.extra)) {
+        const label = k === "tx" ? "teleport x" : k === "ty" ? "teleport y" : k;
+        props.appendChild(numRow(label, selected[k], v => selected[k] = v, "0.01"));
+    }
+}
+
+document.getElementById("delBtn").onclick = () => {
+    if (!selected) return;
+    objects = objects.filter(o => o !== selected);
+    selected = null;
+    buildProps(); draw();
+};
+
+document.getElementById("dupBtn").onclick = () => {
+    if (!selected) return;
+    const t = TYPES[selected.type];
+    if (t.single) return;
+    const copy = { ...selected, id: nextId++, x: selected.x + 20, y: selected.y + 20 };
+    objects.push(copy);
+    selected = copy;
+    buildProps(); draw();
+};
+
+document.getElementById("clearBtn").onclick = () => {
+    if (!confirm("Delete every object in this level?")) return;
+    objects = [];
+    selected = null;
+    buildProps(); draw();
+};
+
+document.getElementById("worldW").oninput = e => { world.w = parseInt(e.target.value, 10) || 0; draw(); };
+document.getElementById("worldH").oninput = e => { world.h = parseInt(e.target.value, 10) || 0; draw(); };
+
+
+// ===========================================================================
+// Drawing
+// ===========================================================================
+
+function draw() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = "#161a1f";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.scale(view.scale, view.scale);
+    ctx.translate(-view.x, -view.y);
+
+    // World background
+    ctx.fillStyle = "lightblue";
+    ctx.fillRect(0, 0, world.w, world.h);
+
+    // Grid
+    const size = Math.max(1, parseInt(document.getElementById("snapSize").value, 10) || 10);
+    const step = size * (view.scale < 0.25 ? 10 : view.scale < 0.6 ? 5 : 1);
+    ctx.strokeStyle = "rgba(0,0,0,0.07)";
+    ctx.lineWidth = 1 / view.scale;
+    ctx.beginPath();
+    for (let x = 0; x <= world.w; x += step) { ctx.moveTo(x, 0); ctx.lineTo(x, world.h); }
+    for (let y = 0; y <= world.h; y += step) { ctx.moveTo(0, y); ctx.lineTo(world.w, y); }
+    ctx.stroke();
+
+    // World border
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 2 / view.scale;
+    ctx.strokeRect(0, 0, world.w, world.h);
+
+    // Objects
+    objects.forEach(o => {
+        const t = TYPES[o.type];
+        ctx.fillStyle = t.color;
+        ctx.fillRect(o.x, o.y, o.width, o.height);
+
+        if (t.dashed) {
+            ctx.save();
+            ctx.setLineDash([6 / view.scale, 4 / view.scale]);
+            ctx.strokeStyle = t.dashed;
+            ctx.lineWidth = 1.5 / view.scale;
+            ctx.strokeRect(o.x, o.y, o.width, o.height);
+            ctx.restore();
+        }
+
+        // Conveyor direction arrow
+        if (o.type === "conveyer") {
+            ctx.fillStyle = "#000";
+            const cy = o.y + o.height / 2;
+            const cx = o.x + o.width / 2;
+            const s = Math.min(o.width, o.height) * 0.4;
+            ctx.beginPath();
+            ctx.moveTo(cx + (o.dir < 0 ? -s : s), cy);
+            ctx.lineTo(cx + (o.dir < 0 ? s : -s), cy - s * 0.6);
+            ctx.lineTo(cx + (o.dir < 0 ? s : -s), cy + s * 0.6);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Button teleport target
+        if (o.type === "button") {
+            ctx.save();
+            ctx.setLineDash([5 / view.scale, 5 / view.scale]);
+            ctx.strokeStyle = "rgba(0,0,0,0.5)";
+            ctx.lineWidth = 1.5 / view.scale;
+            ctx.beginPath();
+            ctx.moveTo(o.x + o.width / 2, o.y + o.height / 2);
+            ctx.lineTo(o.tx, o.ty);
+            ctx.stroke();
+            ctx.restore();
+            ctx.strokeStyle = "rgba(0,0,0,0.7)";
+            ctx.lineWidth = 2 / view.scale;
+            ctx.strokeRect(o.tx - 15, o.ty - 15, 30, 30);
+        }
+
+        if (o.type === "spawn") {
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 2 / view.scale;
+            ctx.strokeRect(o.x, o.y, o.width, o.height);
+        }
+    });
+
+    // Selection
+    if (selected) {
+        ctx.strokeStyle = "#6aa9ff";
+        ctx.lineWidth = 2 / view.scale;
+        ctx.strokeRect(selected.x, selected.y, selected.width, selected.height);
+        if (!TYPES[selected.type].fixedSize) {
+            const hs = 7 / view.scale;
+            ctx.fillStyle = "#6aa9ff";
+            ctx.fillRect(selected.x + selected.width - hs / 2, selected.y + selected.height - hs / 2, hs, hs);
+        }
+    }
+
+    ctx.restore();
+}
+
+
+// ===========================================================================
+// Code generation
+// ===========================================================================
+
+function fmt(n) {
+    const r = Math.round(n * 1000) / 1000;
+    return String(r);
+}
+
+function objLiteral(o) {
+    const t = TYPES[o.type];
+    const parts = [];
+    for (const k of KEY_ORDER) {
+        if (k === "x") parts.push("x: " + fmt(o.x));
+        else if (k === "y") parts.push("y: " + fmt(o.y));
+        else if (k === "width") parts.push("width: " + fmt(o.width));
+        else if (k === "height") parts.push("height: " + fmt(o.height));
+        else if (k in t.extra) parts.push(k + ": " + fmt(o[k]));
+    }
+    if (o.type === "button") {
+        parts.push("teleport_coords: { x: " + fmt(o.tx) + ", y: " + fmt(o.ty) + " }");
+    }
+    return "{ " + parts.join(", ") + " }";
+}
+
+function generate() {
+    const fnName = document.getElementById("fnName").value.trim() || "level3";
+    const lvName = document.getElementById("lvName").value.trim() || "Untitled";
+
+    const byGroup = {};
+    objects.forEach(o => {
+        const g = TYPES[o.type].group;
+        (byGroup[g] = byGroup[g] || []).push(o);
+    });
+
+    const warnings = [];
+    if (!byGroup.spawn) warnings.push("No spawn point — the player will start at (0, 0).");
+    if (!byGroup.goal) warnings.push("No goal — this level can never be completed.");
+    if (!byGroup.platforms && !byGroup.grass) warnings.push("No platforms or grass — nothing to stand on.");
+
+    let s = "function " + fnName + "() {\n";
+    s += "    const W = " + world.w + ";\n";
+    s += "    const H = " + world.h + ";\n\n";
+
+    const emitted = [];
+
+    for (const group of EMIT_ORDER) {
+        const list = byGroup[group];
+        if (!list || list.length === 0) continue;
+        emitted.push(group);
+
+        const single = TYPES[list[0].type].single;
+        if (single) {
+            s += "    const " + group + " = " + objLiteral(list[0]) + ";\n\n";
+        } else {
+            s += "    const " + group + " = [\n";
+            list.forEach(o => { s += "        " + objLiteral(o) + ",\n"; });
+            s += "    ];\n\n";
+        }
+    }
+
+    const sp = byGroup.spawn ? byGroup.spawn[0] : { x: 0, y: 0 };
+
+    s += "    return {\n";
+    s += '        name: "' + lvName.replace(/"/g, '\\"') + '",\n';
+    s += "        width: W,\n";
+    s += "        height: H,\n";
+    s += "        spawn: { x: " + fmt(sp.x) + ", y: " + fmt(sp.y) + " },\n";
+    if (emitted.length) {
+        s += "        " + emitted.join(", ") + ",\n";
+    }
+    s += "    };\n";
+    s += "}\n";
+
+    if (emitted.length === 0 && !byGroup.spawn) {
+        s = "// Nothing placed yet.\n" + s;
+    }
+
+    document.getElementById("out").value = s;
+    document.getElementById("outWrap").style.display = "block";
+    document.getElementById("warn").innerHTML = warnings.length
+        ? warnings.map(w => "⚠ " + w).join("<br>")
+        : "";
+}
+
+document.getElementById("genBtn").onclick = generate;
+
+document.getElementById("copyBtn").onclick = () => {
+    const ta = document.getElementById("out");
+    ta.select();
+    navigator.clipboard.writeText(ta.value).then(() => {
+        const b = document.getElementById("copyBtn");
+        b.textContent = "Copied";
+        setTimeout(() => { b.textContent = "Copy to clipboard"; }, 1200);
+    });
+};
+
+
+// ===========================================================================
+// Boot — starts with a floor and a spawn so the level isn't empty
+// ===========================================================================
+
+function seed() {
+    objects.push(makeObject("grass", 0, world.h - 30, world.w, 30));
+    objects.push(makeObject("spawn", 10, world.h - 70, 30, 30));
+    nextId = objects.length + 1;
+}
+
+buildPalette();
+seed();
+buildProps();
+resize();
+
+// Fit the world vertically on first load
+view.scale = Math.min(1, (canvas.height - 40) / world.h);
+view.x = -(canvas.width / view.scale - world.w) / 2;
+view.y = -20 / view.scale;
+draw();
+</script>
+</body>
+</html>
