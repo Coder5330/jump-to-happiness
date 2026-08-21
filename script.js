@@ -154,7 +154,7 @@ const keys = {};
 
 document.addEventListener("keydown", e => {
     keys[e.key] = true;
-    if (e.key === " ") {
+    if (e.key === " " || e.key === "w") {
         state.jumpBuffered = true;
         e.preventDefault();
     }
@@ -324,7 +324,6 @@ function computeGroundFriction() {
 function applyHorizontalMovement(friction) {
     let left = "a";
     let right = "d";
-
     if (state.changeControls) {
         left = "d";
         right = "a";
