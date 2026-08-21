@@ -825,7 +825,6 @@ function loop() {
     state.lavaHeight -= state.lavaRiseSpeed;
 
     draw();
-    requestAnimationFrame(loop);
 }
 
 loop();
