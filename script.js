@@ -32,6 +32,7 @@ const state = {
     greenLightTimer: 900,
     lavaHeight: WORLD_HEIGHT,
     lavaRiseSpeed: 0.05,
+    homeMeteorChance: 0.2,
 };
 
 const camera = { x: 0, y: 0 };
@@ -740,15 +741,27 @@ function loop() {
     if (state.meteorTime > state.meteorTimer) {
         state.meteorTime = 0;
 
-        meteors.push({
-            x: randint(camera.x, camera.x + canvas.width - 50),
-            y: camera.y,
-            width: randint(20, 50),
-            height: randint(20, 50),
-            dx: randint(-3, 3),
-            dy: randint(2, 5),
-            shape: makeMeteorShape(),
-        });
+        if (Math.random() < state.homeMeteorChance) {
+            meteors.push({
+                x: randint(camera.x, camera.x + canvas.width - 50),
+                y: camera.y,
+                width: randint(20, 50),
+                height: randint(20, 50),
+                dx: randint(-3, 3), // to be continued
+                dy: randint(2, 5),
+                shape: makeMeteorShape(),
+            });
+        } else {
+            meteors.push({
+                x: randint(camera.x, camera.x + canvas.width - 50),
+                y: camera.y,
+                width: randint(20, 50),
+                height: randint(20, 50),
+                dx: randint(-3, 3),
+                dy: randint(2, 5),
+                shape: makeMeteorShape(),
+            });
+        }
     }
 
     if (state.redLight) {
