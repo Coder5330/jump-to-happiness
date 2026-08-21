@@ -742,13 +742,26 @@ function loop() {
         state.meteorTime = 0;
 
         if (Math.random() < state.homeMeteorChance) {
+            let x = randint(camera.x, camera.x + canvas.width - 50);
+            let y = camera.y;
+            let dx = player.x - x;
+            let dy = player.y - y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            let ndx = 0;
+            let ndy = 0;
+            
+            if (distance > 0) {
+                ndx = dx / distance;
+                ndy = dy / distance;
+            }
+            
             meteors.push({
-                x: randint(camera.x, camera.x + canvas.width - 50),
-                y: camera.y,
+                x: x,
+                y: y,
                 width: randint(20, 50),
                 height: randint(20, 50),
-                dx: randint(-3, 3), // to be continued
-                dy: randint(2, 5),
+                dx: ndx, // to be continued
+                dy: ndy,
                 shape: makeMeteorShape(),
             });
         } else {
