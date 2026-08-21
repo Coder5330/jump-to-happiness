@@ -11,28 +11,32 @@ window.addEventListener("resize", resizeCanvas);
 const state = {
     currentLocations: [],
     jumpBuffered: false,
-    paywallTimer: 2400,
+
     meteorTimer: 90,
     meteorTime: 0,
+    homeMeteorChance: 0.2,
+
     time: 0,
-    randomControls: 1200,
     counter: 0,
     changeControls: false,
+
     buttonCooldown: false,
     latestCheckpoint: null,
     invisMessageShown: true,
+
     boosting: 0,
     launchDir: 0,
     onCooldown: false,
     mpDirection: -1,
+
     redLight: false,
     redLightTimer: 300,
     greenLightTimer: 900,
+
     lavaHeight: WORLD_HEIGHT,
-    lavaRiseSpeed: 0.05,
-    homeMeteorChance: 0.2,
+
     resting: false,
-    MandatoryRest: 10000,
+    playTime: 10000,
     RestTime: 5000,
 };
 
@@ -92,7 +96,7 @@ function death() {
         clones.push({ locations: state.currentLocations, frames: 0 });
     }
     state.currentLocations = [];
-    state.lavaHeight = WORLD_HEIGHT;
+    resetLava();
 }
 
 function applyButtonEffect(b) {
@@ -123,76 +127,36 @@ function recordTrail() {
     });
 }
 
-function loop() {
-    requestAnimationFrame(loop);
-
-    if (state.resting) {
-        state.RestTime--;
-        if (state.RestTime <= 0) {
-            state.resting = false;
-            state.MandatoryRest = 10000;
-        }
-        draw();
-        return;
-    }
-
-    state.MandatoryRest--;
-    if (state.MandatoryRest <= 0) {
-        state.resting = true;
-        state.RestTime = 5000;
-    }
-
-    if (state.counter > state.randomControls) {
-        state.changeControls = !state.changeControls;
-        state.counter = 0;
-    }
-
-    if (state.time > state.paywallTimer) {
-        state.time = 0;
-        alert("pay up");
-        const paid = Math.floor(Math.random() * 2) + 1;
-        if (paid === 1) {
-            alert("you didn't pay");
-            death();
-        } else {
-            alert("ty");
-        }
-    }
-
-    state.time++;
-    state.meteorTime++;
-    state.counter++;
-
-    updateMovingPlatforms();
-    move();
-
+function updateCamera() {
     camera.x = player.x - canvas.width / 2 + player.width / 2;
     camera.y = player.y - canvas.height / 2 + player.height / 2;
     camera.x = Math.max(0, Math.min(camera.x, WORLD_WIDTH - canvas.width));
     camera.y = Math.max(0, Math.min(camera.y, WORLD_HEIGHT - canvas.height));
+}
 
+function loop() {
+    requestAnimationFrame(loop);
+
+    if (updateRest()) {
+        draw();
+        return;
+    }
+
+    updateControlScramble();
+    updatePaywall();
+
+    updateMovingPlatforms();
+    move();
+    updateCamera();
+
+    state.meteorTime++;
     if (state.meteorTime > state.meteorTimer) {
         state.meteorTime = 0;
         spawnMeteor();
     }
 
-    if (state.redLight) {
-        state.redLightTimer--;
-        if (state.redLightTimer <= 0) {
-            state.redLight = false;
-            state.greenLightTimer = 900;
-            state.redLightTimer = 300;
-        }
-    } else {
-        state.greenLightTimer--;
-        if (state.greenLightTimer <= 0) {
-            state.redLight = true;
-            state.greenLightTimer = 900;
-            state.redLightTimer = 300;
-        }
-    }
-
-    state.lavaHeight -= state.lavaRiseSpeed;
+    updateRedLight();
+    updateLava();
 
     draw();
 }
