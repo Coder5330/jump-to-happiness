@@ -39,7 +39,7 @@ function level1() {
     const conveyer = [
         { x: 1470, y: H - 814 - 135, width: 100, height: 20, dir: -1 },
         { x: 700, y: wind_zones[0].y - wind_zones[0].height - 90, width: 100, height: 20, dir: -1 },
-        { x: 200, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1 },
+        { x: 50, y: wind_zones[0].y - wind_zones[0].height - 150, width: 100, height: 20, dir: -1 },
     ];
 
     const platforms = [
