@@ -128,53 +128,70 @@ function level1() {
 }
 
 function level2() {
-    const W = 1200;
-    const H = 1400;
+    const W = 1650;
+    const H = 2560;
 
-    const grass = {
-        x: 0,
-        y: H - 30,
-        width: W,
-        height: 30,
-        friction: 1,
-    };
+    const grass = { x: 0, y: 2530, width: 1650, height: 30, friction: 1 };
+
+    const conveyer = [
+        { x: 550, y: 890, width: 150, height: 50, dir: 1 },
+    ];
 
     const platforms = [
-        { width: 160, height: 20, x: 120, y: H - 180, friction: 1 },
-        { width: 120, height: 20, x: 380, y: H - 320, friction: 1 },
-        { width: 120, height: 20, x: 640, y: H - 460, friction: 0.05 },
-        { width: 160, height: 20, x: 880, y: H - 600, friction: 1 },
-        { width: 120, height: 20, x: 620, y: H - 740, friction: 1 },
-        { width: 120, height: 20, x: 340, y: H - 880, friction: 0.02 },
-        { width: 200, height: 20, x: 80, y: H - 1020, friction: 1 },
-        { width: 140, height: 20, x: 420, y: H - 1160, friction: 1 },
+        { x: 250, y: 1990, width: 100, height: 60, friction: 1 },
+        { x: 400, y: 1890, width: 100, height: 60, friction: 1 },
+        { x: 640, y: 1880, width: 100, height: 50, friction: 1 },
+        { x: 850, y: 1880, width: 100, height: 60, friction: 1 },
+        { x: 1190, y: 1890, width: 110, height: 50, friction: 1 },
+        { x: 720, y: 1690, width: 50, height: 60, friction: 1 },
+        { x: 900, y: 1550, width: 50, height: 50, friction: 1 },
+        { x: 710, y: 1390, width: 50, height: 60, friction: 1 },
+        { x: 910, y: 1240, width: 30, height: 60, friction: 1 },
+        { x: 710, y: 1150, width: 30, height: 40, friction: 1 },
+        { x: 700, y: 950, width: 50, height: 60, friction: 1 },
+        { x: 160, y: 860, width: 250, height: 70, friction: 1 },
     ];
 
     const spikes = [
-        { width: W - 200, height: 15, x: 200, y: grass.y - 15 },
-        { width: 60, height: 15, x: 500, y: platforms[1].y - 15 },
+        { x: 770, y: 1950, width: 560, height: 290 },
+        { x: 130, y: 1010, width: 580, height: 730 },
+        { x: 950, y: 240, width: 590, height: 1500 },
+        { x: 150, y: 2470, width: 210, height: 60 },
     ];
 
-    const checkpoint = [
-        { x: platforms[3].x + (platforms[3].width - 40) / 2, y: platforms[3].y - 40, width: 40, height: 40 },
-        { x: platforms[6].x + (platforms[6].width - 40) / 2, y: platforms[6].y - 40, width: 40, height: 40 },
+    const fake_sky = [
+        { x: 550, y: 1940, width: 220, height: 290 },
+        { x: 410, y: 700, width: 140, height: 240 },
     ];
 
-    const goal = {
-        x: platforms[7].x + (platforms[7].width - 40) / 2,
-        y: platforms[7].y - 40,
-        width: 40,
-        height: 40,
-    };
+    const fake_spikes = [
+        { x: 560, y: 630, width: 150, height: 170 },
+    ];
+
+    const fake_platform = { x: 150, y: 2440, width: 200, height: 30 };
+
+    const invisible_platform = [
+        { x: 100, y: 2440, width: 40, height: 40 },
+        { x: 250, y: 2340, width: 50, height: 50 },
+        { x: 440, y: 2240, width: 60, height: 50 },
+        { x: 140, y: 2140, width: 110, height: 60 },
+        { x: 1090, y: 1750, width: 90, height: 190 },
+        { x: 900, y: 1090, width: 40, height: 50 },
+        { x: 710, y: 750, width: 50, height: 50 },
+        { x: 510, y: 650, width: 50, height: 50 },
+    ];
+
+    const goal = { x: 160, y: 790, width: 70, height: 70 };
 
     return {
-        name: "The Climb",
+        name: "New Level",
         width: W,
         height: H,
-        spawn: { x: 20, y: H - 70 },
-        grass, platforms, spikes, checkpoint, goal,
+        spawn: { x: 10, y: 2490 },
+        grass, conveyer, platforms, spikes, fake_sky, fake_spikes, fake_platform, invisible_platform, goal,
     };
 }
+
 
 const LEVELS = [level1, level2];
 
