@@ -11,11 +11,6 @@ const wind_zones = [
     { x: 600, y: WORLD_HEIGHT - 814, width: 300, height: 150, forceX: 2.5, forceY: -0.15, maxSpeedX: 8 },
 ];
 
-const BOOST_SPEED = 32;
-const BOOST_POP = -15;
-const BOOST_TIME = 20;
-const BOOST_CD = 400;
-
 const conveyer = [
     { x: 1470, y: WORLD_HEIGHT - 814 - 135, width: 100, height: 20, dir: -1 },
     { x: 700, y: wind_zones[0].y - wind_zones[0].height - 90, width: 100, height: 20, dir: -1 },
