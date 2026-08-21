@@ -150,7 +150,8 @@ function level2() {
         { x: 710, y: 1150, width: 30, height: 40, friction: 1 },
         { x: 700, y: 950, width: 50, height: 60, friction: 1 },
         { x: 160, y: 860, width: 250, height: 70, friction: 1 },
-        { x: 0, y: 2120, width: 250, height: 25, friction: 1 },
+        { x: 0, y: 2140, width: 250, height: 25, friction: 1 },
+        { x: 350, y: 1940, width: 50, height: 10, friction: 1 },
     ];
 
     const spikes = [
