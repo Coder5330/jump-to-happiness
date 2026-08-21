@@ -56,13 +56,6 @@ const player = {
 
 const clones = [];
 
-const goal = {
-    x: platforms[14].x,
-    y: platforms[14].y - 40,
-    width: 40,
-    height: 40,
-};
-
 const keys = {};
 
 document.addEventListener("keydown", e => {
