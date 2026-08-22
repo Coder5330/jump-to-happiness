@@ -11,6 +11,9 @@ const GIMMICK = {
     redDuration: 300,
 
     lavaRiseSpeed: 0.05,
+
+    shakeTime: 6,
+    shakeDist: 4,
 };
 
 function updateRest() {
@@ -77,4 +80,15 @@ function updateLava() {
 
 function resetLava() {
     state.lavaHeight = WORLD_HEIGHT;
+}
+
+function shakeScreen() {
+    if (!state.shaking) return;
+    state.shakeTime--;
+    if (state.shakeTime <= 0) {
+        state.shakeTime = GIMMICK.shakeTime;
+        state.shaking = false;
+    }
+    state.shakeX = randint(-GIMMICK.shakeDist, GIMMICK.shakeDist);
+    state.shakeY = randint(-GIMMICK.shakeDist, GIMMICK.shakeDist);
 }

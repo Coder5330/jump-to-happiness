@@ -1,12 +1,3 @@
-function collideRect(a, b) {
-    return (
-        a.x < b.x + b.width &&
-        a.x + a.width > b.x &&
-        a.y < b.y + b.height &&
-        a.y + a.height > b.y
-    );
-}
-
 function computeGroundFriction() {
     if (!player.ground) return 1;
     const feetRect = { x: player.x, y: player.y + player.height - 2, width: player.width, height: 4 };

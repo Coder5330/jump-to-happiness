@@ -48,6 +48,11 @@ const state = {
     started: false,
     frozen: false,
     crashCooldown: false,
+
+    shaking: false,
+    shakeTime: 6,
+    shakeX: 0,
+    shakeY: 0,
 };
 
 resizeCanvas();
@@ -108,10 +113,6 @@ up_btn.addEventListener("touchstart", e => {
     state.jumpBuffered = true;
     e.preventDefault();
 });
-
-function randint(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 function startLevel(index) {
     const L = loadLevel(index);

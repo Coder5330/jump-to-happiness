@@ -51,6 +51,8 @@ function drawPlayer(p) {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
+    ctx.translate(-state.shakeX, -state.shakeY);
+    ctx.save();
     ctx.translate(-camera.x, -camera.y);
 
     wind_zones.forEach(zone => {
@@ -150,6 +152,8 @@ function draw() {
         ctx.textBaseline = "middle";
         ctx.fillText(text, canvas.width / 2, 20);
     }
+
+    ctx.restore();
 
     if (state.resting) mandatoryRest();
 }
