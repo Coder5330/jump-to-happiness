@@ -41,3 +41,14 @@ html, body {
     font-family: Times;
     border: 1px solid black;
 }
+
+.mobile-only {
+  display: none;
+}
+
+
+@media (max-width: 767px) {
+    .mobile-only {
+        display: block;
+   }
+}
