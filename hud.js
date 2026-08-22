@@ -11,6 +11,11 @@ function mandatoryRest() {
     ctx.fillText(Math.ceil(state.restTime / 60) + "s", canvas.width / 2, canvas.height / 2 + 40);
 }
 
+function dimOverlay() {
+    ctx.fillStyle = `rgba(0, 0, 0, ${1 - GIMMICK.dimAmount})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
 function drawMeteor(m) {
     const cx = m.x + m.width / 2;
     const cy = m.y + m.height / 2;
@@ -155,5 +160,6 @@ function draw() {
 
     ctx.restore();
 
+    if (state.dim) dimOverlay();
     if (state.resting) mandatoryRest();
 }

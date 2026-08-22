@@ -53,6 +53,10 @@ const state = {
     shakeTime: 10,
     shakeX: 0,
     shakeY: 0,
+
+    dim: false,
+    dimTime: 30,
+    dimTimer: 30,
 };
 
 resizeCanvas();
@@ -256,6 +260,7 @@ function loop() {
 
     updateControlScramble();
     updatePaywall();
+    updateDim();
 
     updateMovingPlatforms();
     move();
