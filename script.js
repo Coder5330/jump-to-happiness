@@ -42,8 +42,8 @@ const state = {
     lavaHeight: 0,
 
     resting: false,
-    playTime: 10000,
-    RestTime: 5000,
+    playTime: 1800,
+    RestTime: 300,
 
     started: false,
     frozen: false,
