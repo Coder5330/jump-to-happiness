@@ -215,7 +215,7 @@ function level2() {
         {x: 369 + 190 + 450 + 94, y: H - 10 - 70 - 50 + 39, width: 10, height: 10},
         {x: 369 + 190 + 450 + 193, y: H - 10 - 70 - 50, width: 10, height: 10},
         {x: 369 + 190 + 450 + 193, y: H - 10 - 70 - 50, width: 10, height: 10},
-        {x: 369 + 190 + 450 + 193 + 150, y: H - 10 - 70, width: 100, height: 10, friction: 1},
+        {x: 369 + 190 + 450 + 193 + 150, y: H - 10 - 70, width: 100, height: 10},
     ];
 
     const moving_platforms = [
@@ -223,8 +223,8 @@ function level2() {
     ];
 
     const goal = {
-        x: invisible_platform[13].x + (invisible_platform[13].width - 40) / 2,
-        y: invisible_platform[13].y - 40,
+        x: invisible_platform[16].x + (invisible_platform[16].width - 40) / 2,
+        y: invisible_platform[16].y - 40,
         width: 40,
         height: 40,
     };
@@ -241,7 +241,7 @@ function level2() {
 }
 
 
-const LEVELS = [level1, level2];
+const LEVELS = [level2, level1, level2];
 
 function loadLevel(index) {
     const L = LEVELS[index]();
