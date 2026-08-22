@@ -2,7 +2,7 @@ const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const left_btn = document.getElementById("left-btn");
 const right_btn = document.getElementById("right-btn");
-const up_btn = document.getElementById("up-btn");
+const up_btn = document.getElementById("jump-btn");
 
 
 function resizeCanvas() {
