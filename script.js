@@ -1,5 +1,9 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
+const left_btn = canvas.getElementById("left-btn");
+const right_btn = canvas.getElementById("right-btn");
+const up_btn = canvas.getElementById("up-btn");
+
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -73,6 +77,32 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("keyup", e => {
     keys[e.key] = false;
+});
+
+left_btn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    keys["ArrowLeft"] = true;
+});
+
+left_btn.addEventListener("touchend", e => {
+    e.preventDefault();
+    keys["ArrowLeft"] = false;
+});
+
+right_btn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    keys["ArrowRight"] = true;
+});
+
+right_btn.addEventListener("touchend", e => {
+    e.preventDefault();
+    keys["ArrowRight"] = false;
+});
+
+up_btn.addEventListener("touchstart", e => {
+    keys["ArrowUp"] = true;
+    state.jumpBuffered = true;
+    e.preventDefault();
 });
 
 function randint(min, max) {
