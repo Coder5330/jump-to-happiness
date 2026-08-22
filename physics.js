@@ -73,10 +73,7 @@ function resolveCollisions(dx, dy) {
         player.ground = true;
     }
 
-    if (
-        (collideRect(new_x_rect, platforms[5]) || collideRect(new_y_rect, platforms[5])) &&
-        state.invisMessageShown
-    ) {
+    if (platforms[5] && (collideRect(new_x_rect, platforms[5]) || collideRect(new_y_rect, platforms[5])) && state.invisMessageShown) {
         alert("From here, some platforms become invisible, have fun! :)");
         state.invisMessageShown = false;
     }
@@ -251,12 +248,12 @@ function updateMeteors() {
 function updateMovingPlatforms() {
     moving_platforms.forEach(platform => {
         platform.x += MP_SPEED * state.mpDirection;
-        if (platform.x <= MP_LEFT_BOUND) {
-            platform.x = MP_LEFT_BOUND;
+        if (platform.x <= platform.left) {
+            platform.x = platform.left;
             state.mpDirection = 1;
         }
-        if (platform.x + platform.width >= MP_RIGHT_BOUND) {
-            platform.x = MP_RIGHT_BOUND - platform.width;
+        if (platform.x + platform.width >= platform.right) {
+            platform.x = platform.right - platform.width;
             state.mpDirection = -1;
         }
     });
