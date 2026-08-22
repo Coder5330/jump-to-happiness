@@ -241,7 +241,7 @@ function level2() {
 }
 
 
-const LEVELS = [level2, level1, level2];
+const LEVELS = [level1, level2];
 
 function loadLevel(index) {
     const L = LEVELS[index]();
