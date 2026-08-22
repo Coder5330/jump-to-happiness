@@ -13,7 +13,7 @@ const GIMMICK = {
     lavaRiseSpeed: 0.05,
 
     shakeTime: 10,
-    shakeDist: 4,
+    shakeDist: 6,
 
     shakeChance: 0.002,
 };

@@ -50,7 +50,7 @@ const state = {
     crashCooldown: false,
 
     shaking: false,
-    shakeTime: 6,
+    shakeTime: 10,
     shakeX: 0,
     shakeY: 0,
 };
