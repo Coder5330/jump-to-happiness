@@ -1,5 +1,9 @@
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
+const left_btn = document.getElementById("left-btn");
+const right_btn = document.getElementById("right-btn");
+const up_btn = document.getElementById("jump-btn");
+
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -67,6 +71,14 @@ const clones = [];
 
 const keys = {};
 
+window.addEventListener("error", e => {
+    alert("ERROR: " + e.message + "\nFile: " + e.filename + "\nLine: " + e.lineno);
+});
+
+window.addEventListener("unhandledrejection", e => {
+    alert("PROMISE ERROR: " + e.reason);
+});
+
 document.addEventListener("keydown", e => {
     keys[e.key] = true;
     if (e.key === " " || e.key === "w") {
@@ -77,6 +89,32 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("keyup", e => {
     keys[e.key] = false;
+});
+
+left_btn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    keys["a"] = true;
+});
+
+left_btn.addEventListener("touchend", e => {
+    e.preventDefault();
+    keys["a"] = false;
+});
+
+right_btn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    keys["d"] = true;
+});
+
+right_btn.addEventListener("touchend", e => {
+    e.preventDefault();
+    keys["d"] = false;
+});
+
+up_btn.addEventListener("touchstart", e => {
+    keys[" "] = true;
+    state.jumpBuffered = true;
+    e.preventDefault();
 });
 
 function randint(min, max) {
