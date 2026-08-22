@@ -1,6 +1,6 @@
 // drawing stuff
-function MandatoryRest() {
-    ctx.fillStyle = "rgba(0,0,0,0.6)";
+function mandatoryRest() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = "30px Arial";
     ctx.fillStyle = "white";
@@ -151,5 +151,5 @@ function draw() {
         ctx.fillText(text, canvas.width / 2, 20);
     }
 
-    if (state.resting) MandatoryRest();
+    if (state.resting) mandatoryRest();
 }
