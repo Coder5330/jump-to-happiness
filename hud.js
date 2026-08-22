@@ -60,8 +60,6 @@ function draw() {
         ctx.fillRect(zone.x, zone.y, zone.width, zone.height);
     });
 
-    drawPlayer(player);
-
     ctx.fillStyle = "green";
     ctx.fillRect(grass.x, grass.y, grass.width, grass.height);
 
@@ -102,6 +100,8 @@ function draw() {
 
     meteors.forEach(drawMeteor);
 
+    drawPlayer(player);
+    
     ctx.fillStyle = "#FF6B00";
     ctx.globalAlpha = 0.1;
     clones.forEach(clone => {
