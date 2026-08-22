@@ -59,7 +59,7 @@ const player = {
     x: 0,
     y: 0,
     height: 40,
-    width: 40,
+    width: 20,
     gravity: 0.5,
     velocity: 0,
     velocityX: 0,
