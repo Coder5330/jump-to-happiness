@@ -14,6 +14,8 @@ const GIMMICK = {
 
     shakeTime: 6,
     shakeDist: 4,
+
+    shakeChance = 0.01
 };
 
 function updateRest() {
@@ -91,4 +93,11 @@ function shakeScreen() {
     }
     state.shakeX = randint(-GIMMICK.shakeDist, GIMMICK.shakeDist);
     state.shakeY = randint(-GIMMICK.shakeDist, GIMMICK.shakeDist);
+}
+
+function updateShake() {
+    if (Math.random() < GIMMICK.shakeChance && !state.shaking) {
+        state.shaking = true;
+        state.shakeTime = 6;
+    }
 }
