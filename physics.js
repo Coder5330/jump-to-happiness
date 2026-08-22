@@ -291,7 +291,8 @@ function move() {
     ({ dx, dy } = resolveCollisions(dx, dy));
     updateMeteors();
     if (state.redLight) {
-        if (dx !== 0 || dy !== 0) {
+        const movingHoriz = keys["a"] || keys["d"] || state.boosting > 0;
+        if (movingHoriz || dy !== 0) {
             death();
         }
     }
