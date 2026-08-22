@@ -81,26 +81,26 @@ document.addEventListener("keyup", e => {
 
 left_btn.addEventListener("touchstart", e => {
     e.preventDefault();
-    keys["ArrowLeft"] = true;
+    keys["a"] = true;
 });
 
 left_btn.addEventListener("touchend", e => {
     e.preventDefault();
-    keys["ArrowLeft"] = false;
+    keys["a"] = false;
 });
 
 right_btn.addEventListener("touchstart", e => {
     e.preventDefault();
-    keys["ArrowRight"] = true;
+    keys["d"] = true;
 });
 
 right_btn.addEventListener("touchend", e => {
     e.preventDefault();
-    keys["ArrowRight"] = false;
+    keys["d"] = false;
 });
 
 up_btn.addEventListener("touchstart", e => {
-    keys["ArrowUp"] = true;
+    keys[" "] = true;
     state.jumpBuffered = true;
     e.preventDefault();
 });
