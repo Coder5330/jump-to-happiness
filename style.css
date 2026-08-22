@@ -52,3 +52,25 @@ html, body {
         display: block;
    }
 }
+
+
+@media (orientation: portrait) {
+    #board, #controls {
+       display: none;
+    }
+    #rotate-overlay {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        align-items: center;
+        justify-content: center;
+        background: black;
+        color: white;
+        font-size: 24px;
+        text-align: center;
+        z-index: 9999;
+    }
+}
+@media (orientation: landscape) {
+    #rotate-overlay { display: none; }
+}
