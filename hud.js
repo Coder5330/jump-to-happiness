@@ -35,6 +35,19 @@ function drawMeteor(m) {
     ctx.stroke();
 }
 
+function drawPlayer(p) {
+    ctx.fillStyle = "#ffe5ca";
+    ctx.fillRect(p.x, p.y, p.width, p.height);
+
+    ctx.fillStyle = "#000";
+    ctx.fillRect(p.x, p.y, p.width, 5);
+
+    ctx.fillRect(p.x + 7, p.y + 10, 5, 5);
+    ctx.fillRect(p.x + 19, p.y + 10, 5, 5);
+
+    ctx.fillRect(p.x + 7, p.y + 10 + 15, 16, 5);
+}
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.save();
@@ -45,8 +58,7 @@ function draw() {
         ctx.fillRect(zone.x, zone.y, zone.width, zone.height);
     });
 
-    ctx.fillStyle = "#FF6B00";
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    drawPlayer(player);
 
     ctx.fillStyle = "green";
     ctx.fillRect(grass.x, grass.y, grass.width, grass.height);
@@ -93,7 +105,15 @@ function draw() {
     clones.forEach(clone => {
         const idx = Math.min(clone.frames, clone.locations.length - 1);
         const pos = clone.locations[idx];
-        if (pos) ctx.fillRect(pos.x, pos.y, player.width, player.height);
+        if (pos) {
+            const clone_obj = {
+                x: pos.x, 
+                y: pos.y, 
+                width: player.width, 
+                height: player.height
+            }
+            drawPlayer(clone_obj);
+        }
     });
     ctx.globalAlpha = 1;
 

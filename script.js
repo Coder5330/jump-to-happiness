@@ -59,7 +59,7 @@ const player = {
     x: 0,
     y: 0,
     height: 40,
-    width: 20,
+    width: 30,
     gravity: 0.5,
     velocity: 0,
     velocityX: 0,
@@ -70,14 +70,6 @@ const player = {
 const clones = [];
 
 const keys = {};
-
-window.addEventListener("error", e => {
-    alert("ERROR: " + e.message + "\nFile: " + e.filename + "\nLine: " + e.lineno);
-});
-
-window.addEventListener("unhandledrejection", e => {
-    alert("PROMISE ERROR: " + e.reason);
-});
 
 document.addEventListener("keydown", e => {
     keys[e.key] = true;
