@@ -67,6 +67,14 @@ const clones = [];
 
 const keys = {};
 
+window.addEventListener("error", e => {
+    alert("ERROR: " + e.message + "\nFile: " + e.filename + "\nLine: " + e.lineno);
+});
+
+window.addEventListener("unhandledrejection", e => {
+    alert("PROMISE ERROR: " + e.reason);
+});
+
 document.addEventListener("keydown", e => {
     keys[e.key] = true;
     if (e.key === " " || e.key === "w") {
