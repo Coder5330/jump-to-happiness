@@ -79,7 +79,9 @@ function level1() {
         { x: 555, y: platforms[1].y - 93, width: 80, height: 93 },
     ];
 
-    const fake_platform = { x: 525, y: platforms[1].y - 304, width: 50, height: 20 };
+    const fake_platform = [
+        { x: 525, y: platforms[1].y - 304, width: 50, height: 20 }
+    ]
 
     const button = [
         {

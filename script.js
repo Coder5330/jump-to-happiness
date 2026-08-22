@@ -41,6 +41,8 @@ const state = {
     resting: false,
     playTime: 10000,
     RestTime: 5000,
+
+    started: false,
 };
 
 const camera = { x: 0, y: 0 };
@@ -538,6 +540,10 @@ function updateCamera() {
 function loop() {
     requestAnimationFrame(loop);
 
+    if (!state.started) {
+        return;
+    }
+
     if (updateRest()) {
         draw();
         return;
@@ -561,6 +567,12 @@ function loop() {
     updateLava();
 
     draw();
+}
+
+function startGame() {
+    document.getElementById("beware-panel").style.display = "none";
+    document.getElementById("board").style.display = "block";
+    state.started = true;
 }
 
 startLevel(0);

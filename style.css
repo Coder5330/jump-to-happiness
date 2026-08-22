@@ -1,0 +1,43 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: lightblue;
+}
+
+#board {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+}
+
+#beware-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    color: red;
+    height: 100vh;
+}
+
+#beware-panel h1 {
+    font-size: 5em;
+    margin: 0px;
+}
+
+#beware-panel p {
+    font-size: 1.5em;
+    color: white;
+}
+
+#beware-panel button {
+    width: 200px;
+    height: 50px;
+    border-radius: 20px;
+    background-color: red;
+    color: white;
+    font-size: 1.5em;
+    font-family: Times;
+    border: 1px solid black;
+}

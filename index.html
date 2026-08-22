@@ -5,21 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>platforms</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: lightblue;
-        }
-        #board {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="beware-panel">
+        <h1>BEWARE</h1>
+        <p>PLAY AT YOUR OWN RISK</p>
+        <button onclick="startGame()">START</button>
+    </div>
     <canvas id="board"></canvas>
     <script src="const.js"></script>
     <script src="levels.js"></script>
