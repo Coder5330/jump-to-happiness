@@ -15,8 +15,8 @@ const GIMMICK = {
 
 function updateRest() {
     if (state.resting) {
-        state.RestTime--;
-        if (state.RestTime <= 0) {
+        state.restTime--;
+        if (state.restTime <= 0) {
             state.resting = false;
             state.playTime = GIMMICK.playDuration;
         }
@@ -26,7 +26,7 @@ function updateRest() {
     state.playTime--;
     if (state.playTime <= 0) {
         state.resting = true;
-        state.RestTime = GIMMICK.restDuration;
+        state.restTime = GIMMICK.restDuration;
     }
     return false;
 }

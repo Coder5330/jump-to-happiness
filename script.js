@@ -43,7 +43,7 @@ const state = {
 
     resting: false,
     playTime: 1800,
-    RestTime: 300,
+    restTime: 300,
 
     started: false,
     frozen: false,

@@ -294,6 +294,8 @@ function move() {
         const movingHoriz = keys["a"] || keys["d"] || state.boosting > 0;
         if (movingHoriz || dy !== 0) {
             death();
+            recordTrail();
+            return;
         }
     }
     player.x += dx;
