@@ -4,9 +4,8 @@ const ctx = canvas.getContext("2d");
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    if (state.started) draw();
 }
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
 
 const state = {
     levelIndex: 0,
@@ -43,7 +42,12 @@ const state = {
     RestTime: 5000,
 
     started: false,
+    frozen: false,
+    crashCooldown: false,
 };
+
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
 const camera = { x: 0, y: 0 };
 
@@ -125,11 +129,41 @@ function checkGoal() {
 
     const next = state.levelIndex + 1;
     if (next >= LEVELS.length) {
-        alert("you made it. happiness achieved");
-        startLevel(0);
+        triggerCrashSequence();
     } else {
         startLevel(next);
     }
+}
+
+function triggerCrashSequence() {
+    if (state.frozen || state.crashCooldown) return;
+    state.frozen = true;
+    setTimeout(showUnresponsiveModal, 7000);
+}
+
+function showUnresponsiveModal() {
+    document.getElementById("crashPageTitle").textContent = document.title;
+    document.getElementById("crashPageUrl").textContent = location.href;
+    document.getElementById("crashModal").style.display = "flex";
+}
+
+function fakeWait() {
+    document.getElementById("crashModal").style.display = "none";
+    document.getElementById("board").style.display = "none";
+    document.getElementById("crashPage").style.display = "flex";
+}
+
+function fakeKill() {
+    resetGame();
+}
+
+function resetGame() {
+    document.getElementById("crashModal").style.display = "none";
+    document.getElementById("crashPage").style.display = "none";
+    document.getElementById("board").style.display = "block";
+    state.frozen = false;
+    state.crashCooldown = true;
+    setTimeout(() => { state.crashCooldown = false; }, 1000);
 }
 
 function death() {
@@ -540,7 +574,7 @@ function updateCamera() {
 function loop() {
     requestAnimationFrame(loop);
 
-    if (!state.started) {
+    if (!state.started || state.frozen) {
         return;
     }
 
