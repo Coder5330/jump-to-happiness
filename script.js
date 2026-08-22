@@ -58,8 +58,8 @@ const camera = { x: 0, y: 0 };
 const player = {
     x: 0,
     y: 0,
-    height: 30,
-    width: 30,
+    height: 40,
+    width: 40,
     gravity: 0.5,
     velocity: 0,
     velocityX: 0,
