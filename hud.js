@@ -8,7 +8,7 @@ function mandatoryRest() {
     ctx.textBaseline = "middle";
     ctx.fillText("Mandatory Rest Break", canvas.width / 2, canvas.height / 2);
     ctx.font = "20px Arial";
-    ctx.fillText(Math.ceil(state.RestTime / 60) + "s", canvas.width / 2, canvas.height / 2 + 40);
+    ctx.fillText(Math.ceil(state.restTime / 60) + "s", canvas.width / 2, canvas.height / 2 + 40);
 }
 
 function drawMeteor(m) {

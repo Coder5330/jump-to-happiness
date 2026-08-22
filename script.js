@@ -270,6 +270,8 @@ function loop() {
 
     updateRedLight();
     updateLava();
+    updateShake();
+    shakeScreen();
 
     draw();
 }

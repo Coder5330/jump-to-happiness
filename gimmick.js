@@ -12,10 +12,10 @@ const GIMMICK = {
 
     lavaRiseSpeed: 0.05,
 
-    shakeTime: 6,
+    shakeTime: 10,
     shakeDist: 4,
 
-    shakeChance = 0.01
+    shakeChance: 0.002,
 };
 
 function updateRest() {
@@ -90,6 +90,9 @@ function shakeScreen() {
     if (state.shakeTime <= 0) {
         state.shakeTime = GIMMICK.shakeTime;
         state.shaking = false;
+        state.shakeX = 0;
+        state.shakeY = 0;
+        return;
     }
     state.shakeX = randint(-GIMMICK.shakeDist, GIMMICK.shakeDist);
     state.shakeY = randint(-GIMMICK.shakeDist, GIMMICK.shakeDist);
@@ -98,6 +101,6 @@ function shakeScreen() {
 function updateShake() {
     if (Math.random() < GIMMICK.shakeChance && !state.shaking) {
         state.shaking = true;
-        state.shakeTime = 6;
+        state.shakeTime = 10;
     }
 }
