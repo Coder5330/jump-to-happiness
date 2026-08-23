@@ -173,7 +173,7 @@ function showFinalScreen() {
         blackout.style.display = "block";
         void blackout.offsetWidth;
         blackout.style.opacity = "1";
-    }, 4200);
+    }, 1500);
 }
 
 function checkGoal() {
