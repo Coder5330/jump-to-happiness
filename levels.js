@@ -216,7 +216,7 @@ function level2() {
         {x: 369 + 190 + 450 + 94, y: H - 10 - 70 - 50 + 39, width: 10, height: 10},
         {x: 369 + 190 + 450 + 193, y: H - 10 - 70 - 50, width: 10, height: 10},
         {x: 369 + 190 + 450 + 193, y: H - 10 - 70 - 50, width: 10, height: 10},
-        {x: 369 + 190 + 450 + 193 + 100, y: H - 10 - 70, width: 150, height: 10},
+        {x: 369 + 190 + 450 + 193 + 50, y: H - 10 - 70, width: 150, height: 10},
     ];
 
     const moving_platforms = [
