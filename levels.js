@@ -196,7 +196,6 @@ function level2() {
         {x: platforms[1].x + (platforms[1].width - 40) / 2, y: platforms[1].y - 40, width: 40, height: 40},
         {x: platforms[4].x + (platforms[4].width - 40) / 2, y: platforms[4].y - 40, width: 40, height: 40},
         {x: 590, y: H - 725, width: 70, height: 40},
-        {x: platforms[7].x + (platforms[7].width - 40) / 2, y: platforms[7].y - 40, width: 40, height: 40},
         {x: platforms[2].x + (platforms[2].width - 40) / 2, y: platforms[2].y - 40, width: 40, height: 40},
     ];
 
