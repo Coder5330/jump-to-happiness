@@ -47,8 +47,7 @@ const state = {
 
     started: false,
     frozen: false,
-    triggered: false,
-
+    
     shaking: false,
     shakeTime: 10,
     shakeX: 0,
@@ -57,6 +56,8 @@ const state = {
     dim: false,
     dimTime: randint(1, 300),
     dimTimer: randint(1, 300),
+
+    crashCount: 0,
 };
 
 resizeCanvas();
@@ -158,6 +159,23 @@ function respawn() {
     player.ground = false;
 }
 
+function showFinalScreen() {
+    document.getElementById("board").style.display = "none";
+    document.getElementById("finalScreen").style.display = "flex";
+
+    const text = document.getElementById("finalText");
+    const blackout = document.getElementById("blackout");
+
+    void text.offsetWidth;
+    text.style.transform = "scale(40)";
+
+    setTimeout(() => {
+        blackout.style.display = "block";
+        void blackout.offsetWidth;
+        blackout.style.opacity = "1";
+    }, 4200);
+}
+
 function checkGoal() {
     if (goal.width === 0) return;
     if (!collideRect(player, goal)) return;
@@ -171,10 +189,14 @@ function checkGoal() {
 }
 
 function triggerCrashSequence() {
-    if (state.frozen || state.triggered) return;
+    if (state.frozen || state.crashCooldown) return;
     state.frozen = true;
-    state.triggered = true;
-    setTimeout(showUnresponsiveModal, 7000);
+    state.crashCount++;
+    if (state.crashCount >= 3) {
+        setTimeout(showFinalScreen, 7000);
+    } else {
+        setTimeout(showUnresponsiveModal, 7000);
+    }
 }
 
 function showUnresponsiveModal() {
