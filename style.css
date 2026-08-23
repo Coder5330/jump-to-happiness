@@ -288,3 +288,35 @@ html, body {
     left: calc(100vw - 20px - 50px);
     top: calc(100vh - 70px);
 }
+
+#finalScreen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#finalText {
+    font-family: Arial, sans-serif;
+    font-size: 32px;
+    color: #333;
+    display: inline-block;
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 4s cubic-bezier(0.6, 0, 0.9, 0.2),
+                opacity 1.5s ease-in 2.5s;
+}
+
+#blackout {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 1.2s ease-in;
+}
