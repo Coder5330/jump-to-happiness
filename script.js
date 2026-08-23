@@ -55,8 +55,8 @@ const state = {
     shakeY: 0,
 
     dim: false,
-    dimTime: 30,
-    dimTimer: 30,
+    dimTime: randint(1, 300),
+    dimTimer: randint(1, 300),
 };
 
 resizeCanvas();
