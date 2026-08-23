@@ -47,7 +47,7 @@ const state = {
 
     started: false,
     frozen: false,
-    crashCooldown: false,
+    triggered: false,
 
     shaking: false,
     shakeTime: 10,
@@ -171,8 +171,9 @@ function checkGoal() {
 }
 
 function triggerCrashSequence() {
-    if (state.frozen || state.crashCooldown) return;
+    if (state.frozen || state.triggered) return;
     state.frozen = true;
+    state.triggered = true;
     setTimeout(showUnresponsiveModal, 7000);
 }
 
