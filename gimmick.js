@@ -18,8 +18,6 @@ const GIMMICK = {
     shakeChance: 0.002,
 
     dimAmount: 0.4,
-    dimTime: 30,
-    dimTimer: 30,
 };
 
 function updateRest() {
@@ -114,16 +112,16 @@ function updateDim() {
         state.dimTime--;
         if (state.dimTime <= 0) {
             state.dim = false;
-            state.dimTime = GIMMICK.dimTime;
-            state.dimTimer = GIMMICK.dimTimer;
+            state.dimTime = randint(1, 300);
+            state.dimTimer = randint(1, 300);
         }
     }
     else {
         state.dimTimer--;
         if (state.dimTimer <= 0) {
             state.dim = true;
-            state.dimTimer = GIMMICK.dimTimer;
-            state.dimTime = GIMMICK.dimTime;
+            state.dimTimer = randint(1, 300);
+            state.dimTime = randint(1, 300);
         }
     }
     
