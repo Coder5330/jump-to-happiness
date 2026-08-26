@@ -10,7 +10,7 @@ const GIMMICK = {
     greenDuration: 900,
     redDuration: 300,
 
-    lavaRiseSpeed: 0.05,
+    lavaRiseSpeed: 0.2,
 
     shakeTime: 10,
     shakeDist: 6,
